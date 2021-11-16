@@ -1,0 +1,11 @@
+body {
+  font-family: "Nunito", sans-serif;
+}
+
+#portfolio-table,
+th,
+td {
+  border: 1px solid black;
+  min-width: 100px;
+  text-align: center;
+}
