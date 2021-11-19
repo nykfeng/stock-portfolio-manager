@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fetching Data Practice</title>
+    <title>Stock Portfolio Manager</title>
     <script src="app.js" type="module" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +13,17 @@
   </head>
   <body>
     <header>Stock Portfolio</header>
+    <div class="input-field">
+      <legend>
+        <input type="text" id="stock-ticker" placeholder="Stock Ticker...">
+        <input type="number" id="entry-price" placeholder="Entry Price">
+        <input type="number" id="number-shares" placeholder="Share Number">
+        <button id="submit-stock">Submit</button>
+      </legend>
+    </div>
+    <div>
+      <button id="delete-all-stock">Clear Portfolio</button>
+    </div>
     <div>
       <table id="portfolio-table">
         <tr id="table-heading">
