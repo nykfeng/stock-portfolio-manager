@@ -103,7 +103,7 @@ const renderStockInfo = async function (stock) {
       <td>${stock.ticker}</td>
       <td>${stock.shares}</td>
       <td>${stock.entry.toFixed(2)}</td>
-      <td>${stockAPIData.latestPrice}</td>
+      <td>${stockAPIData.latestPrice.toFixed(2)}</td>
       <td>${totalPaid.toFixed(2)}</td>
       <td>${(stock.shares * stockAPIData.latestPrice).toFixed(2)}</td>
       <td>${(stockAPIData.changePercent * 100).toFixed(2)}%</td>

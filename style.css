@@ -5,7 +5,30 @@ body {
 #portfolio-table,
 th,
 td {
-  border: 1px solid black;
-  min-width: 100px;
+  text-align: right;
+}
+
+#portfolio-table {
+  min-width: 1000px;
+  border-top: 5px solid #1098ad;
+  border-bottom: 5px solid #1098ad;
+}
+
+#table-heading,
+.stock-info-row {
+  background-color: #f7f7f7;
+}
+
+.title {
+  background-color: beige;
   text-align: center;
+}
+
+#portfolio-section,
+#control-section {
+  display: block;
+  margin: 0 auto;
+  width: 70%;
+
+  padding: 10px;
 }
