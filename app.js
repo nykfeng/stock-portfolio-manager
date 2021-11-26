@@ -1,4 +1,6 @@
 import PortfolioStocksAPI from "./js/PortfolioStocksAPI.js";
+import stockCard from "./js/stockCard.js";
+import logoImg from "./js/logoImg.js";
 
 const portfolioTable = document.getElementById("portfolio-table");
 const addStockBtn = document.getElementById("submit-stock");
@@ -100,18 +102,25 @@ const renderStockInfo = async function (stock) {
   const totalPaid = stock.shares * stock.entry;
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
-      <td>${stock.ticker}</td>
-      <td>${stock.shares}</td>
-      <td>${stock.entry.toFixed(2)}</td>
-      <td>${stockAPIData.latestPrice.toFixed(2)}</td>
-      <td>${totalPaid.toFixed(2)}</td>
-      <td>${(stock.shares * stockAPIData.latestPrice).toFixed(2)}</td>
-      <td>${(stockAPIData.changePercent * 100).toFixed(2)}%</td>
-      <td>${(stock.shares * stockAPIData.change).toFixed(2)}</td>
-      <td>${(stock.shares * stockAPIData.latestPrice - totalPaid).toFixed(
+      <td id="ticker">${stock.ticker}</td>
+      <td id="shares">${stock.shares}</td>
+      <td id="entry-price">$${stock.entry.toFixed(2)}</td> 
+      <td id="latest-price">$${stockAPIData.latestPrice.toFixed(2)}</td> 
+      <td id="total-paid">$${totalPaid.toFixed(2)}</td> 
+      <td id="latest-value">$${(
+        stock.shares * stockAPIData.latestPrice
+      ).toFixed(2)}</td> 
+      <td id="daily-percentage">${(stockAPIData.changePercent * 100).toFixed(
         2
-      )}</td>
-      <td>${(
+      )}%</td> 
+      <td id="daily-change">$${(stock.shares * stockAPIData.change).toFixed(
+        2
+      )}</td> 
+      <td id="total-profit-loss">$${(
+        stock.shares * stockAPIData.latestPrice -
+        totalPaid
+      ).toFixed(2)}</td>
+      <td id="total-roi">${(
         ((stockAPIData.latestPrice - stock.entry) / stock.entry) *
         100
       ).toFixed(2)}%</td>
@@ -127,3 +136,6 @@ const renderPortfolio = function () {
 };
 
 renderPortfolio();
+stockCard("fb", logoImg.facebookLogo);
+stockCard("nvda", logoImg.nvidiaLogo);
+stockCard("amzn", logoImg.amazonLogo);
