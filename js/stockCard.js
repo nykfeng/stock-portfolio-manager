@@ -73,10 +73,9 @@ const renderStockChartIframe = function (stock) {
 
 const formattPriceColor = function (stock) {
   const priceBox = document.querySelectorAll(".highlight");
-  console.log(`${stock.symbol} is ${stock.changePercent}`);
   priceBox.forEach((price) => {
     price.classList.add(
-      stock.changePercent >= 0 ? "greenPriceBox" : "redPriceBox"
+      stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
     );
   });
 };

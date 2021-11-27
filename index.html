@@ -21,8 +21,8 @@
     <div class="input-field">
       <legend>
         <input type="text" id="stock-ticker" placeholder="Stock Ticker...">
-        <input type="number" id="entry-price" placeholder="Entry Price">
-        <input type="number" id="number-shares" placeholder="Share Number">
+        <input type="text" id="entry-price" data-type="currency" placeholder="Entry Price">
+        <input type="text" id="number-shares" placeholder="Share Number">
         <button id="submit-stock">Submit</button>
       </legend>
     </div>
@@ -33,18 +33,20 @@
 
   <section id="portfolio-section">
     <table id="portfolio-table">
-      <tr id="table-heading">
-        <th>Ticker</th>
-        <th>Share</th>
-        <th>Entry</th>
-        <th>Price</th>
-        <th>Paid</th>
-        <th>Value</th>
-        <th>Daily %</th>
-        <th>Daily +/-</th>
-        <th>P/L</th>
-        <th>% P/L</th>
-      </tr>
+      <thead>
+        <tr id="table-header-row">
+          <th class="ticker-header">Ticker</th>
+          <th class="share-header">Shares</th>
+          <th class="entry-header">Cost Basis</th>
+          <th class="price-header">Market Price</th>
+          <th class="paid-header">Paid Value</th>
+          <th class="value-header">Market Value</th>
+          <th class="daily-percent-header">Daily %</th>
+          <th class="daily-plus-minus-header">Daily +/-</th>
+          <th class="profit-loss-header">Overall Gain</th>
+          <th class="profit-loss-percent-header">Overall Gain %</th>
+        </tr>
+      </thead>
     </table>
   </section>
 

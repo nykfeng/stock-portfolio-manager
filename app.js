@@ -1,10 +1,29 @@
 import PortfolioStocksAPI from "./js/PortfolioStocksAPI.js";
 import stockCard from "./js/stockCard.js";
-import logoImg from "./js/logoImg.js";
+import utility from "./js/utility.js";
 
-const portfolioTable = document.getElementById("portfolio-table");
+const portfolioTableEl = document.getElementById("portfolio-table");
+const stockTickerInputEl = document.getElementById("stock-ticker");
+const stockEntryPriceInputEl = document.getElementById("entry-price");
+const stockSharesInputEl = document.getElementById("number-shares");
 const addStockBtn = document.getElementById("submit-stock");
 const clearPortfolioBtn = document.getElementById("delete-all-stock");
+
+// [stockEntryPriceInputEl, stockSharesInputEl].forEach((input) => {
+//   input.addEventListener("keyup", function () {
+//     this.value = utility.formatNumber(
+//       parseFloat(this.value.replace(/[,]+/g, ""))
+//     );
+//   });
+// });
+
+stockSharesInputEl.addEventListener("keyup", function () {
+  this.value = utility.formatNumber(this.value.replace(/[,]+/g, ""));
+});
+
+stockTickerInputEl.addEventListener("keyup", function () {
+  this.value = this.value.toUpperCase();
+});
 
 let html;
 const stocks = [];
@@ -17,7 +36,9 @@ const addStockFromInput = function () {
     .getElementById("stock-ticker")
     .value.toUpperCase();
   const stockEntry = document.getElementById("entry-price").value;
-  const stockQuantity = document.getElementById("number-shares").value;
+  const stockQuantity = document
+    .getElementById("number-shares")
+    .value.replace(/[,]+/g, "");
 
   if (!stockTicker || !stockEntry || !stockQuantity) return;
 
@@ -70,39 +91,61 @@ const fetchStockInfo = async function (stock) {
 const renderStockInfo = async function (stock) {
   const stockAPIData = await fetchStockInfo(stock);
   const totalPaid = stock.shares * stock.entry;
+  const overallGainPercent =
+    ((stockAPIData.latestPrice - stock.entry) / stock.entry) * 100;
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
-      <td id="ticker">${stock.ticker}</td>
-      <td id="shares">${stock.shares}</td>
-      <td id="entry-price">$${stock.entry.toFixed(2)}</td> 
-      <td id="latest-price">$${stockAPIData.latestPrice.toFixed(2)}</td> 
-      <td id="total-paid">$${totalPaid.toFixed(2)}</td> 
-      <td id="latest-value">$${(
-        stock.shares * stockAPIData.latestPrice
-      ).toFixed(2)}</td> 
-      <td id="daily-percentage">${(stockAPIData.changePercent * 100).toFixed(
-        2
-      )}%</td> 
-      <td id="daily-change">$${(stock.shares * stockAPIData.change).toFixed(
-        2
+      <td class="ticker">${stock.ticker}</td>
+      <td class="shares">${utility.formatNumber(stock.shares)}</td>
+      <td class="entry-price">$${utility.formatNumber(
+        stock.entry.toFixed(2)
       )}</td> 
-      <td id="total-profit-loss">$${(
-        stock.shares * stockAPIData.latestPrice -
-        totalPaid
-      ).toFixed(2)}</td>
-      <td id="total-roi">${(
-        ((stockAPIData.latestPrice - stock.entry) / stock.entry) *
-        100
-      ).toFixed(2)}%</td>
+      <td class="latest-price">$${utility.formatNumber(
+        stockAPIData.latestPrice.toFixed(2)
+      )}</td> 
+      <td class="total-paid">$${utility.formatNumber(
+        totalPaid.toFixed(2)
+      )}</td> 
+      <td class="latest-value">$${utility.formatNumber(
+        (stock.shares * stockAPIData.latestPrice).toFixed(2)
+      )}</td> 
+      <td class="daily-percentage ${formattPortfolioColor(
+        stockAPIData.changePercent
+      )}">${utility.formatNumber(
+    (stockAPIData.changePercent * 100).toFixed(2)
+  )}%</td> 
+      <td class="daily-change ${formattPortfolioColor(
+        stockAPIData.changePercent
+      )}">$${utility.formatNumber(
+    (stock.shares * stockAPIData.change).toFixed(2)
+  )}</td> 
+      <td class="overall-gain">$${utility.formatNumber(
+        (stock.shares * stockAPIData.latestPrice - totalPaid).toFixed(2)
+      )}</td>
+      <td class="overall-gain-percent ${formattPortfolioColor(
+        overallGainPercent
+      )}">${utility.formatNumber(overallGainPercent.toFixed(2))}%</td>
     </tr>
   `;
 };
 
 const renderPortfolio = function () {
+  // const portfolioBodyEl = portfolioTableEl.appendChild(
+  //   document.createElement("tbody")
+  // );
+  const portfolioBodyEl = document.createElement("tbody");
+  portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
+
   PortfolioStocksAPI.getAllStocks().forEach(async (stock) => {
     html = await renderStockInfo(stock);
-    portfolioTable.insertAdjacentHTML("beforeend", html);
+    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
   });
+};
+
+const formattPortfolioColor = function (plusMinus) {
+  return plusMinus >= 0
+    ? "green-price-box portfolio-box"
+    : "red-price-box portfolio-box";
 };
 
 renderPortfolio();
