@@ -54,36 +54,6 @@ const removePortfolioHtml = function () {
   }
 };
 
-// stocks.push({
-//   ticker: "AAPL",
-//   shares: 10,
-//   entry: 150,
-//   paid: function () {
-//     return this.shares * this.entry;
-//   },
-//   acquiredDate: new Date(),
-// });
-
-// stocks.push({
-//   ticker: "NVDA",
-//   shares: 15,
-//   entry: 120,
-//   paid: function () {
-//     return this.shares * this.entry;
-//   },
-//   acquiredDate: new Date(),
-// });
-
-// stocks.push({
-//   ticker: "U",
-//   shares: 20,
-//   entry: 90,
-//   paid: function () {
-//     return this.shares * this.entry;
-//   },
-//   acquiredDate: new Date(),
-// });
-
 // localStorage.clear();
 // stocks.forEach((stock) => PortfolioStocksAPI.addStock(stock));
 
@@ -136,6 +106,8 @@ const renderPortfolio = function () {
 };
 
 renderPortfolio();
-stockCard("fb", logoImg.facebookLogo);
-stockCard("nvda", logoImg.nvidiaLogo);
-stockCard("amzn", logoImg.amazonLogo);
+stockCard("fb");
+stockCard("nvda");
+stockCard("amzn");
+stockCard("aapl");
+stockCard("goog");
