@@ -57,6 +57,19 @@ table {
 #table-header-row {
   background-color: #1a2f38;
   color: #d5e5ec;
+  cursor: pointer;
+}
+
+.th-sort-asc::before {
+  content: "\25b4";
+}
+
+.th-sort-desc::before {
+  content: "\25be";
+}
+
+.th-sort-pending::before {
+  content: "\25b4\25be";
 }
 
 #portfolio-section,

@@ -5,7 +5,6 @@ export default async function (ticker) {
     `https://cloud.iexapis.com/stable/stock/${ticker}/quote?token=pk_b8445edb92244ad88a3de425568b1d07 `
   );
   const data = await res.json();
-  console.log(data);
   renderStockCard(data);
 }
 

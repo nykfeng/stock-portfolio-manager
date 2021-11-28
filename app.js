@@ -8,6 +8,7 @@ const stockEntryPriceInputEl = document.getElementById("entry-price");
 const stockSharesInputEl = document.getElementById("number-shares");
 const addStockBtn = document.getElementById("submit-stock");
 const clearPortfolioBtn = document.getElementById("delete-all-stock");
+const tableHeaderEls = document.querySelectorAll("th");
 
 // [stockEntryPriceInputEl, stockSharesInputEl].forEach((input) => {
 //   input.addEventListener("keyup", function () {
@@ -41,10 +42,6 @@ const addStockFromInput = function () {
     .value.replace(/[,]+/g, "");
 
   if (!stockTicker || !stockEntry || !stockQuantity) return;
-
-  console.log("stockTicker " + stockTicker);
-  console.log("stockEntry " + stockEntry);
-  console.log("stockQuantity " + stockQuantity);
 
   PortfolioStocksAPI.addStock({
     ticker: stockTicker,
@@ -90,9 +87,14 @@ const fetchStockInfo = async function (stock) {
 
 const renderStockInfo = async function (stock) {
   const stockAPIData = await fetchStockInfo(stock);
-  const totalPaid = stock.shares * stock.entry;
-  const overallGainPercent =
-    ((stockAPIData.latestPrice - stock.entry) / stock.entry) * 100;
+
+  await storingAPIDataToLocal(stockAPIData);
+  calculatingLocalStockData();
+
+  return portfolioRowHtml(stock);
+};
+
+const portfolioRowHtml = function (stock) {
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
       <td class="ticker">${stock.ticker}</td>
@@ -101,42 +103,44 @@ const renderStockInfo = async function (stock) {
         stock.entry.toFixed(2)
       )}</td> 
       <td class="latest-price">$${utility.formatNumber(
-        stockAPIData.latestPrice.toFixed(2)
+        stock.latestPrice.toFixed(2)
       )}</td> 
       <td class="total-paid">$${utility.formatNumber(
-        totalPaid.toFixed(2)
+        stock.totalPaid.toFixed(2)
       )}</td> 
       <td class="latest-value">$${utility.formatNumber(
-        (stock.shares * stockAPIData.latestPrice).toFixed(2)
+        (stock.shares * stock.latestPrice).toFixed(2)
       )}</td> 
       <td class="daily-percentage ${formattPortfolioColor(
-        stockAPIData.changePercent
-      )}">${utility.formatNumber(
-    (stockAPIData.changePercent * 100).toFixed(2)
-  )}%</td> 
+        stock.changePercent
+      )}">${utility.formatNumber((stock.changePercent * 100).toFixed(2))}%</td> 
       <td class="daily-change ${formattPortfolioColor(
-        stockAPIData.changePercent
-      )}">$${utility.formatNumber(
-    (stock.shares * stockAPIData.change).toFixed(2)
-  )}</td> 
+        stock.changePercent
+      )}">$${utility.formatNumber(stock.change.toFixed(2))}</td> 
       <td class="overall-gain">$${utility.formatNumber(
-        (stock.shares * stockAPIData.latestPrice - totalPaid).toFixed(2)
+        stock.overallGain.toFixed(2)
       )}</td>
       <td class="overall-gain-percent ${formattPortfolioColor(
-        overallGainPercent
-      )}">${utility.formatNumber(overallGainPercent.toFixed(2))}%</td>
+        stock.overallGainPercent
+      )}">${utility.formatNumber(stock.overallGainPercent.toFixed(2))}%</td>
     </tr>
   `;
 };
 
 const renderPortfolio = function () {
-  // const portfolioBodyEl = portfolioTableEl.appendChild(
-  //   document.createElement("tbody")
-  // );
   const portfolioBodyEl = document.createElement("tbody");
   portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
 
+  /*
+  // Rendering from Local Storage
   PortfolioStocksAPI.getAllStocks().forEach(async (stock) => {
+    html = await renderStockInfo(stock);
+    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+  });
+  */
+
+  // Rendering from local array memory, which has been updated by pulling Local Storage first
+  stocks.forEach(async (stock) => {
     html = await renderStockInfo(stock);
     portfolioBodyEl.insertAdjacentHTML("beforeend", html);
   });
@@ -148,9 +152,66 @@ const formattPortfolioColor = function (plusMinus) {
     : "red-price-box portfolio-box";
 };
 
+const storingAPIDataToLocal = async function (APIData) {
+  const index = stocks.findIndex((stock) => stock.ticker === APIData.symbol);
+  if (index > -1) {
+    stocks[index].change = APIData.change * stocks[index].shares;
+    stocks[index].changePercent = APIData.changePercent;
+    stocks[index].latestPrice = APIData.latestPrice;
+  }
+};
+
+const calculatingLocalStockData = function () {
+  stocks.forEach((stock) => {
+    stock.totalPaid = stock.shares * stock.entry;
+    stock.marketValue = stock.shares * stock.latestPrice;
+    stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
+    stock.overallGainPercent =
+      ((stock.latestPrice - stock.entry) / stock.entry) * 100;
+  });
+};
+
+const sortingPortfolioColumns = function (column, asc = true) {
+  const dirModifier = asc ? 1 : -1;
+  stocks.sort((a, b) => {
+    return a[column] < b[column] ? dirModifier * 1 : dirModifier * -1;
+  });
+};
+
+let newStocks = sortingPortfolioColumns(stocks);
+console.log("Sorting the array ");
+console.log(newStocks);
+
+tableHeaderEls.forEach(function (tableHeader) {
+  tableHeader.addEventListener("click", function () {
+    const asc = this.classList.contains("th-sort-asc");
+    this.classList.remove("th-sort-pending");
+
+    sortingPortfolioColumns(tableHeader.dataset.column, asc);
+    // this.classList.remove("th-sort-asc", "th-sort-desc");
+    this.classList.toggle("th-sort-asc", !asc);
+    this.classList.toggle("th-sort-desc", asc);
+
+    removePortfolioHtml();
+    reArrangePortfolioBySort();
+  });
+});
+
+const reArrangePortfolioBySort = function () {
+  const portfolioBodyEl = document.querySelector("tbody");
+  while (portfolioBodyEl.firstChild) {
+    portfolioBodyEl.removeChild(portfolioBodyEl.firstChild);
+  }
+  stocks.forEach((stock) => {
+    html = portfolioRowHtml(stock);
+    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+  });
+};
+
 renderPortfolio();
 stockCard("fb");
 stockCard("nvda");
 stockCard("amzn");
 stockCard("aapl");
 stockCard("goog");
+console.log(stocks);
