@@ -8,6 +8,11 @@ const stockEntryPriceInputEl = document.getElementById("entry-price");
 const stockSharesInputEl = document.getElementById("number-shares");
 const addStockBtn = document.getElementById("submit-stock");
 const clearPortfolioBtn = document.getElementById("delete-all-stock");
+const editPortfolioBtn = document.getElementById("edit-all-stock");
+const deleteIndividualStockBtn =
+  portfolioTableEl.querySelectorAll("tr .delete-btn");
+const EditIndividualStockBtn = document.querySelectorAll("tr .edit-btn");
+
 const tableHeaderEls = document.querySelectorAll("th");
 
 // [stockEntryPriceInputEl, stockSharesInputEl].forEach((input) => {
@@ -41,7 +46,9 @@ const addStockFromInput = function () {
     .getElementById("number-shares")
     .value.replace(/[,]+/g, "");
 
-  if (!stockTicker || !stockEntry || !stockQuantity) return;
+  if (!stockTicker || !stockEntry || !stockQuantity) {
+    return;
+  }
 
   PortfolioStocksAPI.addStock({
     ticker: stockTicker,
@@ -49,24 +56,20 @@ const addStockFromInput = function () {
     entry: +stockEntry,
     acquiredDate: new Date().toISOString(),
   });
-
-  console.log(localStorage.getItem("portfolio-stocks"));
+  stocks.push({
+    ticker: stockTicker,
+    shares: +stockQuantity,
+    entry: +stockEntry,
+    acquiredDate: new Date().toISOString(),
+  });
 
   removePortfolioHtml();
   renderPortfolio();
 };
 
-// Add stocks to portfolio
-addStockBtn.addEventListener("click", addStockFromInput);
-
-// Clear the portfolio
-clearPortfolioBtn.addEventListener("click", function () {
-  localStorage.clear();
-  removePortfolioHtml();
-});
-
 const removePortfolioHtml = function () {
   const stockInfoRow = document.querySelectorAll(".stock-info-row");
+
   for (const el of stockInfoRow) {
     el.remove();
   }
@@ -88,7 +91,7 @@ const fetchStockInfo = async function (stock) {
 const renderStockInfo = async function (stock) {
   const stockAPIData = await fetchStockInfo(stock);
 
-  await storingAPIDataToLocal(stockAPIData);
+  storingAPIDataToLocal(stockAPIData);
   calculatingLocalStockData();
 
   return portfolioRowHtml(stock);
@@ -97,6 +100,7 @@ const renderStockInfo = async function (stock) {
 const portfolioRowHtml = function (stock) {
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
+  <td class="indivial-row-btns edit-btn hide-it"><i class="far fa-edit"></i></td>
       <td class="ticker">${stock.ticker}</td>
       <td class="shares">${utility.formatNumber(stock.shares)}</td>
       <td class="entry-price">$${utility.formatNumber(
@@ -123,7 +127,10 @@ const portfolioRowHtml = function (stock) {
       <td class="overall-gain-percent ${formattPortfolioColor(
         stock.overallGainPercent
       )}">${utility.formatNumber(stock.overallGainPercent.toFixed(2))}%</td>
+      
+      <td class="indivial-row-btns delete-btn hide-it"><i class="far fa-trash-alt"></i></td>
     </tr>
+
   `;
 };
 
@@ -152,7 +159,7 @@ const formattPortfolioColor = function (plusMinus) {
     : "red-price-box portfolio-box";
 };
 
-const storingAPIDataToLocal = async function (APIData) {
+const storingAPIDataToLocal = function (APIData) {
   const index = stocks.findIndex((stock) => stock.ticker === APIData.symbol);
   if (index > -1) {
     stocks[index].change = APIData.change * stocks[index].shares;
@@ -178,17 +185,13 @@ const sortingPortfolioColumns = function (column, asc = true) {
   });
 };
 
-let newStocks = sortingPortfolioColumns(stocks);
-console.log("Sorting the array ");
-console.log(newStocks);
-
 tableHeaderEls.forEach(function (tableHeader) {
   tableHeader.addEventListener("click", function () {
     const asc = this.classList.contains("th-sort-asc");
+    resetSortButtons();
     this.classList.remove("th-sort-pending");
 
     sortingPortfolioColumns(tableHeader.dataset.column, asc);
-    // this.classList.remove("th-sort-asc", "th-sort-desc");
     this.classList.toggle("th-sort-asc", !asc);
     this.classList.toggle("th-sort-desc", asc);
 
@@ -208,6 +211,12 @@ const reArrangePortfolioBySort = function () {
   });
 };
 
+const resetSortButtons = function () {
+  tableHeaderEls.forEach(function (tableHeader) {
+    tableHeader.classList.add("th-sort-pending");
+  });
+};
+
 renderPortfolio();
 stockCard("fb");
 stockCard("nvda");
@@ -215,3 +224,57 @@ stockCard("amzn");
 stockCard("aapl");
 stockCard("goog");
 console.log(stocks);
+
+/* -------------------- START of Button Control  ---------------------------*/
+
+// Add stocks to portfolio
+addStockBtn.addEventListener("click", addStockFromInput);
+
+// Clear the portfolio
+clearPortfolioBtn.addEventListener("click", function () {
+  const deletePortfolio = confirm(
+    "Are you sure you want to delete your portfolio?"
+  );
+  if (deletePortfolio) {
+    localStorage.clear();
+    stocks.splice(0, stocks.length);
+    removePortfolioHtml();
+  }
+});
+
+// Edit portfolio button
+editPortfolioBtn.addEventListener("click", function () {
+  document.querySelectorAll(".th-place-holder").forEach((tableHead) => {
+    tableHead.classList.toggle("hide-it");
+  });
+  document.querySelectorAll(".indivial-row-btns").forEach((eachRow) => {
+    eachRow.classList.toggle("hide-it");
+  });
+});
+
+window.onload = function () {
+  console.log("Window load ");
+  let xc = document.querySelectorAll("tr .delete-btn");
+  console.log(xc);
+};
+
+// Delete individual stock button
+console.log(deleteIndividualStockBtn);
+deleteIndividualStockBtn.forEach((deleteBtn) => {
+  console.log(deleteBtn.children);
+  deleteBtn.children.addEventListener("click", function (e) {
+    console.log("Clicked");
+    const parentEl = e.target.parent;
+    console.log(parentEl);
+  });
+});
+
+// Edit individual stock button
+// console.log(EditIndividualStockBtn);
+// EditIndividualStockBtn.forEach((editBtn) => {
+//   editBtn.addEventListener("click", function () {
+//     console.log("clicked");
+//   });
+// });
+
+/* --------------------- END of Button Control  ---------------------------*/

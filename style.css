@@ -9,37 +9,135 @@ body {
   font-size: 32px;
 }
 
-button {
-  background-color: #b2ea70;
-  font-size: 22px;
-  color: white;
+.hide-it {
+  display: none;
+}
+
+/* --- START OF CONTROL section--- */
+
+#control-section {
+  display: grid;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+  grid-template-columns: 250px 160px;
+}
+
+#control-section {
+  margin-bottom: 10px;
+}
+
+.input-field {
+  border: 2px solid #1a2f38;
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  width: 200px;
+  height: 150px;
+  grid-template-columns: 110px 90px;
+  grid-template-rows: repeat(3, 40px);
+  align-content: center;
+  justify-self: start;
+}
+
+.stock-input-block {
+  height: 35px;
+  align-items: center;
+}
+
+.stock-input {
+  width: 90px;
+}
+
+#submit-stock {
+  font-size: 50px;
+  grid-column: 2 / 3;
+  grid-row: 1 / 4;
   border-radius: 8%;
   border-style: none;
   cursor: pointer;
+  background-color: #1a2f38;
+  color: white;
 }
 
-button:hover {
-  background-color: #f7f7f7;
-
-  color: #b2ea70;
+#delete-all-stock {
+  height: 40px;
+  width: 50px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #c93636;
+  background-color: #fff;
+  border-radius: 10px;
+  align-content: center;
+  border: 1px solid #c93636;
 }
+
+#delete-all-stock:hover {
+  color: #ec6666;
+  border: 1px solid #ec6666;
+}
+
+#delete-all-stock:active,
+#edit-all-stock:active {
+  transform: scale(0.9);
+}
+
+#edit-all-stock {
+  height: 40px;
+  width: 50px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #46819b;
+  background-color: #fff;
+  border-radius: 10px;
+  align-content: center;
+  border: 1px solid #46819b;
+}
+
+#edit-all-stock:hover {
+  color: #639bb3;
+  border: 1px solid #639bb3;
+}
+
+.input-field-buttons {
+  display: grid;
+  align-self: end;
+  justify-self: end;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 5px;
+}
+
+#submit-stock:hover {
+  background-color: #46819b;
+  color: white;
+}
+
+/* --- END OF CONTROL section--- */
 
 /* --- START OF PORTFOLIO section--- */
+#portfolio-section {
+  justify-content: center;
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+
+  justify-content: space-between;
+}
+
+#portfolio-table {
+  width: 100%;
+}
 
 #portfolio-table,
 th,
 td {
   text-align: right;
-  height: 30px;
+  padding-right: 5px;
+  height: 35px;
   font-weight: bold;
 }
 
-table {
-  border-collapse: collapse;
-}
-
 #portfolio-table {
-  /* min-width: 1000px; */
   border-top: 5px solid #46819b;
   border-bottom: 5px solid #46819b;
 }
@@ -47,16 +145,12 @@ table {
 #table-header-row,
 .stock-info-row {
   background-color: #f7f7f7;
-  margin-bottom: 115px;
-}
-
-.stock-info-row:nth-of-type(even) {
-  background-color: #c7dce6;
+  margin-bottom: 70px;
 }
 
 #table-header-row {
   background-color: #1a2f38;
-  color: #d5e5ec;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -69,27 +163,42 @@ table {
 }
 
 .th-sort-pending::before {
-  content: "\25b4\25be";
+  content: "\21C4";
+  margin-right: 2px;
 }
 
-#portfolio-section,
+/* #portfolio-section,
 #control-section {
   display: grid;
   grid-template-columns: minmax(700px, 1fr);
   margin: 0 10%;
   padding: 10px;
-}
+} */
 
 #portfolio-section,
 header {
-  margin-bottom: 80px;
+  margin-bottom: 70px;
 }
 
-.portfolio-box {
-  /* border-top: 1px solid #fff; */
-  border-bottom: 1px solid #fff;
-  border-left: 1px solid #fff;
-  border-right-style: 1px solid #fff;
+.indivial-row-btns {
+  background-color: #fff;
+  text-align: end;
+  cursor: pointer;
+}
+
+.edit-btn {
+  color: #46819b;
+}
+.delete-btn {
+  color: #c93636;
+}
+
+.edit-btn:hover {
+  color: #1a2f38;
+}
+
+.delete-btn:hover {
+  color: #ec6666;
 }
 
 /* --- END OF PORTFOLIO section--- */
@@ -167,6 +276,11 @@ header {
 .stock-card:hover {
   position: relative;
   top: -40px;
+  transform: scale(1.2);
+}
+
+.highlight {
+  padding: 1px 1.5px;
 }
 
 .green-price-box {
@@ -180,7 +294,6 @@ header {
 } */
 
 .red-price-box {
-  padding: 1px;
   border-radius: 5px;
   background-color: #c93636;
   color: #fff;

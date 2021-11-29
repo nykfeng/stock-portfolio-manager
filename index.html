@@ -13,41 +13,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   </link>
+  <script src="https://kit.fontawesome.com/2155740522.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
   <header class="title">Stock Portfolio</header>
   <section id="control-section">
-    <div class="input-field">
-      <legend>
-        <input type="text" id="stock-ticker" placeholder="Stock Ticker...">
-        <input type="text" id="entry-price" data-type="currency" placeholder="Entry Price">
-        <input type="text" id="number-shares" placeholder="Share Number">
-        <button id="submit-stock">Submit</button>
-      </legend>
+    <form class="input-field">
+      <div class="stock-input-block"><input class="stock-input" type="text" id="stock-ticker"
+          placeholder="Stock Ticker..."></div>
+      <div class="stock-input-block"><input class="stock-input" type="text" id="entry-price" data-type="currency"
+          placeholder="Entry Price"></div>
+      <div class="stock-input-block"><input class="stock-input" type="text" id="number-shares"
+          placeholder="Share Number"></div>
+      <button id="submit-stock">+</button>
+
+    </form>
+    <div class="input-field-buttons"><button id="edit-all-stock"><i class="fas fa-tools"></i></button>
+      <button id="delete-all-stock"><i class="fas fa-trash-alt"></i></button>
     </div>
-    <div>
-      <button id="delete-all-stock">Clear Portfolio</button>
-    </div>
+
+
   </section>
 
   <section id="portfolio-section">
     <table id="portfolio-table">
       <thead>
         <tr id="table-header-row">
+          <th class="th-place-holder  hide-it"></th>
           <th class="ticker-header th-sort-pending" data-column="ticker">Ticker</th>
-          <th class="share-header" data-column="shares">Shares</th>
-          <th class="entry-header" data-column="entry">Cost Basis</th>
-          <th class="price-header" data-column="latestPrice">Market Price</th>
-          <th class="paid-header" data-column="totalPaid">Paid Value</th>
-          <th class="value-header" data-column="marketValue">Market Value</th>
-          <th class="daily-percent-header" data-column="changePercent">Daily %</th>
-          <th class="daily-plus-minus-header" data-column="change">Daily +/-</th>
-          <th class="profit-loss-header" data-column="overallGain">Overall Gain</th>
-          <th class="profit-loss-percent-header" data-column="overallGainPercent">Overall Gain %</th>
+          <th class="share-header th-sort-pending" data-column="shares">Shares</th>
+          <th class="entry-header th-sort-pending" data-column="entry">Cost Basis</th>
+          <th class="price-header th-sort-pending" data-column="latestPrice">Market Price</th>
+          <th class="paid-header th-sort-pending" data-column="totalPaid">Paid Value</th>
+          <th class="value-header th-sort-pending" data-column="marketValue">Market Value</th>
+          <th class="daily-percent-header th-sort-pending" data-column="changePercent">Daily %</th>
+          <th class="daily-plus-minus-header th-sort-pending" data-column="change">Daily +/-</th>
+          <th class="profit-loss-header th-sort-pending" data-column="overallGain">Overall Gain</th>
+          <th class="profit-loss-percent-header th-sort-pending" data-column="overallGainPercent">Overall Gain %</th>
+          <th class="th-place-holder  hide-it"></th>
         </tr>
       </thead>
     </table>
+
   </section>
 
   <section id="stock-card-section">
