@@ -1,10 +1,11 @@
 body {
   font-family: "Nunito", sans-serif;
+  background-color: #f7f7f7;
 }
 
 .title {
   background-color: #1a2f38;
-  color: #d5e5ec;
+  color: #fff;
   text-align: center;
   font-size: 32px;
 }
@@ -33,15 +34,14 @@ body {
   padding: 10px;
   display: grid;
   width: 200px;
-  height: 150px;
   grid-template-columns: 110px 90px;
-  grid-template-rows: repeat(3, 40px);
-  align-content: center;
+  grid-template-rows: repeat(3, 25px);
+  align-content: space-around;
   justify-self: start;
 }
 
 .stock-input-block {
-  height: 35px;
+  height: 22px;
   align-items: center;
 }
 
@@ -56,8 +56,14 @@ body {
   border-radius: 8%;
   border-style: none;
   cursor: pointer;
-  background-color: #1a2f38;
-  color: white;
+  background-color: #f7f7f7;
+  color: #1a2f38;
+  border: 1px solid #1a2f38;
+}
+
+#submit-stock:hover {
+  background-color: #46819b;
+  color: #fff;
 }
 
 #delete-all-stock {
@@ -107,11 +113,6 @@ body {
   column-gap: 5px;
 }
 
-#submit-stock:hover {
-  background-color: #46819b;
-  color: white;
-}
-
 /* --- END OF CONTROL section--- */
 
 /* --- START OF PORTFOLIO section--- */
@@ -138,19 +139,22 @@ td {
 }
 
 #portfolio-table {
-  border-top: 5px solid #46819b;
-  border-bottom: 5px solid #46819b;
+  border-top: 3px solid #46819b;
+  border-bottom: 3px solid #46819b;
 }
 
 #table-header-row,
 .stock-info-row {
-  background-color: #f7f7f7;
+  background-color: #fff;
   margin-bottom: 70px;
 }
 
 #table-header-row {
   background-color: #1a2f38;
   color: #ffffff;
+}
+
+.th-sort-pending {
   cursor: pointer;
 }
 
@@ -167,21 +171,13 @@ td {
   margin-right: 2px;
 }
 
-/* #portfolio-section,
-#control-section {
-  display: grid;
-  grid-template-columns: minmax(700px, 1fr);
-  margin: 0 10%;
-  padding: 10px;
-} */
-
 #portfolio-section,
 header {
   margin-bottom: 70px;
 }
 
 .indivial-row-btns {
-  background-color: #fff;
+  background-color: #f7f7f7;
   text-align: end;
   cursor: pointer;
 }
@@ -222,9 +218,16 @@ header {
   padding: 1rem;
   grid-template-rows: 100px 150px, 100px;
   background-color: #f7f7f7;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 10px;
   row-gap: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.stock-card:hover {
+  position: relative;
+  top: -30px;
+  transform: scale(1.1);
 }
 
 .stock-basics {
@@ -271,12 +274,6 @@ header {
   font-weight: bold;
   background-color: #fff;
   border-radius: 10px;
-}
-
-.stock-card:hover {
-  position: relative;
-  top: -40px;
-  transform: scale(1.2);
 }
 
 .highlight {

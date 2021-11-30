@@ -1,3 +1,4 @@
+import dialog from "./js/dialog.js";
 import PortfolioStocksAPI from "./js/PortfolioStocksAPI.js";
 import stockCard from "./js/stockCard.js";
 import utility from "./js/utility.js";
@@ -9,19 +10,9 @@ const stockSharesInputEl = document.getElementById("number-shares");
 const addStockBtn = document.getElementById("submit-stock");
 const clearPortfolioBtn = document.getElementById("delete-all-stock");
 const editPortfolioBtn = document.getElementById("edit-all-stock");
-const deleteIndividualStockBtn =
-  portfolioTableEl.querySelectorAll("tr .delete-btn");
-const EditIndividualStockBtn = document.querySelectorAll("tr .edit-btn");
 
-const tableHeaderEls = document.querySelectorAll("th");
-
-// [stockEntryPriceInputEl, stockSharesInputEl].forEach((input) => {
-//   input.addEventListener("keyup", function () {
-//     this.value = utility.formatNumber(
-//       parseFloat(this.value.replace(/[,]+/g, ""))
-//     );
-//   });
-// });
+const tableHeaderEls = document.querySelectorAll(".th-sort-header");
+const hiddenTableHeaderEls = document.querySelectorAll(".th-place-holder");
 
 stockSharesInputEl.addEventListener("keyup", function () {
   this.value = utility.formatNumber(this.value.replace(/[,]+/g, ""));
@@ -100,7 +91,11 @@ const renderStockInfo = async function (stock) {
 const portfolioRowHtml = function (stock) {
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
-  <td class="indivial-row-btns edit-btn hide-it"><i class="far fa-edit"></i></td>
+      <td class="indivial-row-btns edit-btn ${
+        document.querySelector(".th-place-holder").classList.contains("hide-it")
+          ? "hide-it"
+          : ""
+      }"><i class="far fa-edit"></i></td>
       <td class="ticker">${stock.ticker}</td>
       <td class="shares">${utility.formatNumber(stock.shares)}</td>
       <td class="entry-price">$${utility.formatNumber(
@@ -128,7 +123,11 @@ const portfolioRowHtml = function (stock) {
         stock.overallGainPercent
       )}">${utility.formatNumber(stock.overallGainPercent.toFixed(2))}%</td>
       
-      <td class="indivial-row-btns delete-btn hide-it"><i class="far fa-trash-alt"></i></td>
+      <td class="indivial-row-btns delete-btn ${
+        document.querySelector(".th-place-holder").classList.contains("hide-it")
+          ? "hide-it"
+          : ""
+      }"><i class="far fa-trash-alt"></i></td>
     </tr>
 
   `;
@@ -185,6 +184,7 @@ const sortingPortfolioColumns = function (column, asc = true) {
   });
 };
 
+// Reading in all the table header sort buttons and sort the table
 tableHeaderEls.forEach(function (tableHeader) {
   tableHeader.addEventListener("click", function () {
     const asc = this.classList.contains("th-sort-asc");
@@ -192,6 +192,7 @@ tableHeaderEls.forEach(function (tableHeader) {
     this.classList.remove("th-sort-pending");
 
     sortingPortfolioColumns(tableHeader.dataset.column, asc);
+
     this.classList.toggle("th-sort-asc", !asc);
     this.classList.toggle("th-sort-desc", asc);
 
@@ -232,14 +233,24 @@ addStockBtn.addEventListener("click", addStockFromInput);
 
 // Clear the portfolio
 clearPortfolioBtn.addEventListener("click", function () {
-  const deletePortfolio = confirm(
-    "Are you sure you want to delete your portfolio?"
-  );
-  if (deletePortfolio) {
-    localStorage.clear();
-    stocks.splice(0, stocks.length);
-    removePortfolioHtml();
-  }
+  // If there are no stocks to remove, simply return
+  if (stocks.length === 0) return;
+  dialog();
+
+  document
+    .querySelector(".confirm_button--ok")
+    .addEventListener("click", function () {
+      localStorage.clear();
+      stocks.splice(0, stocks.length);
+      removePortfolioHtml();
+      document.querySelector(".confirm_dialog-background").remove();
+    });
+
+  document
+    .querySelector(".confirm_button--cancel")
+    .addEventListener("click", function () {
+      document.querySelector(".confirm_dialog-background").remove();
+    });
 });
 
 // Edit portfolio button
@@ -250,22 +261,22 @@ editPortfolioBtn.addEventListener("click", function () {
   document.querySelectorAll(".indivial-row-btns").forEach((eachRow) => {
     eachRow.classList.toggle("hide-it");
   });
-});
 
-window.onload = function () {
-  console.log("Window load ");
-  let xc = document.querySelectorAll("tr .delete-btn");
-  console.log(xc);
-};
+  const deleteIndividualStockBtn = document.querySelectorAll(".delete-btn");
+  const EditIndividualStockBtn = document.querySelectorAll(".edit-btn");
 
-// Delete individual stock button
-console.log(deleteIndividualStockBtn);
-deleteIndividualStockBtn.forEach((deleteBtn) => {
-  console.log(deleteBtn.children);
-  deleteBtn.children.addEventListener("click", function (e) {
-    console.log("Clicked");
-    const parentEl = e.target.parent;
-    console.log(parentEl);
+  // Delete individual stock button
+  deleteIndividualStockBtn.forEach((deleteBtn) => {
+    deleteBtn.addEventListener("click", function (e) {
+      console.log("Pre deleting");
+      console.log(stocks);
+      const ticker = this.parentElement.querySelector(".ticker").textContent;
+      const index = stocks.findIndex((stock) => stock.ticker === ticker);
+
+      stocks.splice(index, 1);
+      console.log("Post deleting");
+      console.log(stocks);
+    });
   });
 });
 

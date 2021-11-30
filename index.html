@@ -7,17 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Portfolio Manager</title>
   <script src="app.js" type="module" defer></script>
+  <script src="dialog.js" type="module" defer></script>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dialog.css">
   <link rel="stylesheet" href="style.css">
   </link>
   <script src="https://kit.fontawesome.com/2155740522.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-  <header class="title">Stock Portfolio</header>
+  <header class="title">Stock Portfolio App</header>
   <section id="control-section">
     <form class="input-field">
       <div class="stock-input-block"><input class="stock-input" type="text" id="stock-ticker"
@@ -40,18 +42,18 @@
     <table id="portfolio-table">
       <thead>
         <tr id="table-header-row">
-          <th class="th-place-holder  hide-it"></th>
-          <th class="ticker-header th-sort-pending" data-column="ticker">Ticker</th>
-          <th class="share-header th-sort-pending" data-column="shares">Shares</th>
-          <th class="entry-header th-sort-pending" data-column="entry">Cost Basis</th>
-          <th class="price-header th-sort-pending" data-column="latestPrice">Market Price</th>
-          <th class="paid-header th-sort-pending" data-column="totalPaid">Paid Value</th>
-          <th class="value-header th-sort-pending" data-column="marketValue">Market Value</th>
-          <th class="daily-percent-header th-sort-pending" data-column="changePercent">Daily %</th>
-          <th class="daily-plus-minus-header th-sort-pending" data-column="change">Daily +/-</th>
-          <th class="profit-loss-header th-sort-pending" data-column="overallGain">Overall Gain</th>
-          <th class="profit-loss-percent-header th-sort-pending" data-column="overallGainPercent">Overall Gain %</th>
-          <th class="th-place-holder  hide-it"></th>
+          <th class="th-place-holder hide-it"></th>
+          <th class="th-sort-header th-sort-pending" data-column="ticker">Ticker</th>
+          <th class="th-sort-header th-sort-pending" data-column="shares">Shares</th>
+          <th class="th-sort-header th-sort-pending" data-column="entry">Cost Basis</th>
+          <th class="th-sort-header th-sort-pending" data-column="latestPrice">Market Price</th>
+          <th class="th-sort-header th-sort-pending" data-column="totalPaid">Paid Value</th>
+          <th class="th-sort-header th-sort-pending" data-column="marketValue">Market Value</th>
+          <th class="th-sort-header th-sort-pending" data-column="changePercent">Daily %</th>
+          <th class="th-sort-header th-sort-pending" data-column="change">Daily +/-</th>
+          <th class="th-sort-header th-sort-pending" data-column="overallGain">Overall Gain</th>
+          <th class="th-sort-header th-sort-pending" data-column="overallGainPercent">Overall Gain %</th>
+          <th class="th-place-holder hide-it"></th>
         </tr>
       </thead>
     </table>
