@@ -7,7 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Portfolio Manager</title>
   <script src="app.js" type="module" defer></script>
-  <script src="dialog.js" type="module" defer></script>
+  <script src="js/dialog.js" type="module" defer></script>
+  <script src="js/control.js" type="module" defer></script>
+  <script src="js/render.js" type="module" defer></script>
+  <script src="js/PortfolioLocalStorage.js" type="module" defer></script>
+  <script src="js/currentPortfolioStocks.js" type="module" defer></script>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +25,7 @@
 <body>
   <header class="title">Stock Portfolio App</header>
   <section id="control-section">
-    <form class="input-field">
+    <div class="input-field">
       <div class="stock-input-block"><input class="stock-input" type="text" id="stock-ticker"
           placeholder="Stock Ticker..."></div>
       <div class="stock-input-block"><input class="stock-input" type="text" id="entry-price" data-type="currency"
@@ -30,7 +34,7 @@
           placeholder="Share Number"></div>
       <button id="submit-stock">+</button>
 
-    </form>
+    </div>
     <div class="input-field-buttons"><button id="edit-all-stock"><i class="fas fa-tools"></i></button>
       <button id="delete-all-stock"><i class="fas fa-trash-alt"></i></button>
     </div>

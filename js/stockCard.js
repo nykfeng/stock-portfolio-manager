@@ -20,12 +20,12 @@ const renderStockCard = function (stock) {
       }_Logo.png"></span></span>
       <div class="stock-last-price">
       <span>${stock.primaryExchange}: ${stock.symbol}</span>
-      <span>Latest Price: <span class="highlight">${
-        stock.latestPrice
-      }</span></span>
-      <span>Latest Change: <span class="highlight">${(
-        parseFloat(stock.changePercent) * 100
-      ).toFixed(2)}%</span></span>
+      <span>Latest Price: <span class="highlight ${
+        stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
+      }">${stock.latestPrice}</span></span>
+      <span>Latest Change: <span class="highlight ${
+        stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
+      }">${(parseFloat(stock.changePercent) * 100).toFixed(2)}%</span></span>
       </div>
     </div>
     <div class="stock-chart">
@@ -47,7 +47,7 @@ const renderStockCard = function (stock) {
       `;
 
   stockCardSection.insertAdjacentHTML("beforeend", html);
-  formattPriceColor(stock);
+  // formattPriceColor(stock);
 };
 
 const formattCompanyName = function (name) {
@@ -73,6 +73,8 @@ const renderStockChartIframe = function (stock) {
 const formattPriceColor = function (stock) {
   const priceBox = document.querySelectorAll(".highlight");
   priceBox.forEach((price) => {
+    price.classList.remove("green-price-box");
+    price.classList.remove("red-price-box");
     price.classList.add(
       stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
     );

@@ -22,7 +22,7 @@
   font-size: 26px;
 
   border: 2px solid #1a2f38;
-  border-radius: 5px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
@@ -46,13 +46,13 @@
 .confirm_dialog_btn-box {
   display: flex;
   justify-content: end;
-  gap: 30px;
+  gap: 20px;
   padding-right: 20px;
 }
 
 .confirm_button--ok,
 .confirm_button--cancel {
-  width: 80px;
+  width: 100px;
   font-size: 30px;
   cursor: pointer;
 }
