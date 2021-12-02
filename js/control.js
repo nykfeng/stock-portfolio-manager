@@ -1,5 +1,6 @@
 import PortfolioLocalStorage from "./PortfolioLocalStorage.js";
 import currentPortfolioStocks from "./currentPortfolioStocks.js";
+import fetchStockFromAPI from "./fetchStockFromAPI.js";
 import render from "./render.js";
 import utility from "./utility.js";
 import dialog from "./dialog.js";
@@ -27,7 +28,7 @@ stockTickerInputEl.addEventListener("keyup", function () {
 });
 
 // Main add button
-const addStockFromInput = function () {
+const addStockFromInput = async function () {
   const stockTicker = stockTickerInputEl.value.toUpperCase();
   const stockEntry = stockEntryPriceInputEl.value;
   const stockQuantity = stockSharesInputEl.value.replace(/[,]+/g, "");
@@ -39,21 +40,35 @@ const addStockFromInput = function () {
   if (!stockTicker || !stockEntry || !stockQuantity) {
     return;
   }
-  //  else
-  PortfolioLocalStorage.addStock({
-    ticker: stockTicker,
-    shares: +stockQuantity,
-    entry: +stockEntry,
-    acquiredDate: new Date().toISOString(),
-  });
-  currentPortfolioStocks.add({
-    ticker: stockTicker,
-    shares: +stockQuantity,
-    entry: +stockEntry,
-    acquiredDate: new Date().toISOString(),
-  });
-  removePortfolioHtml();
-  render.portfolio();
+
+  if (
+    !parseFloat(stockEntry) ||
+    !parseFloat(stockQuantity) ||
+    parseFloat(stockEntry) <= 0 ||
+    parseFloat(stockQuantity) <= 0
+  ) {
+    fetchStockFromAPI.fetchStockInfoError();
+    return;
+  }
+
+  if (await fetchStockFromAPI.fetchStockInfo({ ticker: stockTicker })) {
+    //  else
+    PortfolioLocalStorage.addStock({
+      ticker: stockTicker,
+      shares: +stockQuantity,
+      entry: +stockEntry,
+      acquiredDate: new Date().toISOString(),
+    });
+    currentPortfolioStocks.add({
+      ticker: stockTicker,
+      shares: +stockQuantity,
+      entry: +stockEntry,
+      acquiredDate: new Date().toISOString(),
+    });
+
+    removePortfolioHtml();
+    render.portfolio();
+  }
 };
 
 // Remove the whole portfolio
@@ -78,6 +93,16 @@ const removePortfolioHtml = function () {
 const deleteIndividualStockFromPortfolio = function (ticker) {
   currentPortfolioStocks.del(ticker);
   PortfolioLocalStorage.deleteStock(ticker);
+};
+
+const initializeWithSampleData = function () {
+  fetch("./sample.json")
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      localStorage.setItem("portfolio-stocks", JSON.stringify(data));
+    });
 };
 
 /* -------------------- START of Button Control  ---------------------------*/
@@ -119,7 +144,7 @@ const buttonsON = function () {
   deletePortfolioBtn.addEventListener("click", function () {
     // If there are no stocks to remove, simply return
     if (currentPortfolioStocks.stocks.length === 0) return;
-    dialog();
+    dialog.confirmDeletion();
 
     document
       .querySelector(".confirm_button--ok")
@@ -145,39 +170,115 @@ const buttonsON = function () {
     });
   });
 
-  console.log(document.querySelector("#portfolio-table tbody"));
-  const deleteIndividualStockBtn = document.querySelectorAll(".delete-btn");
-  const EditIndividualStockBtn = document.querySelectorAll(".edit-btn");
-
-  // Delete individual stock button // NEED Fixing
-  deleteIndividualStockBtn.forEach((deleteBtn) => {
-    deleteBtn.addEventListener("click", function () {
-      console.log("Pre deleting");
-      console.log(currentPortfolioStocks.stocks);
-      const ticker = this.parentElement.querySelector(".ticker").textContent;
+  // Since individual delete buttons are rendered dynamically,
+  // the event listener will first listen to the portfolio-table ID
+  // then when the exact delete button element was click, it executes the delete
+  const individualStockBtn = document.querySelector("#portfolio-table");
+  individualStockBtn.addEventListener("click", function (e) {
+    if (
+      e.target.classList.contains("far") &&
+      e.target.parentElement.classList.contains("delete-btn")
+    ) {
+      const ticker =
+        e.target.parentElement.parentElement.querySelector(
+          ".ticker"
+        ).textContent;
       deleteIndividualStockFromPortfolio(ticker);
+      console.log(ticker + " was deleted!");
       removePortfolioHtml();
       render.portfolio();
-      console.log("Post deleting");
-      console.log(currentPortfolioStocks.stocks);
-    });
+    }
+
+    if (
+      e.target.classList.contains("far") &&
+      e.target.parentElement.classList.contains("edit-btn")
+    ) {
+      const ticker =
+        e.target.parentElement.parentElement.querySelector(
+          ".ticker"
+        ).textContent;
+      console.log(ticker + " was edited");
+      const tableCellEls =
+        e.target.parentElement.parentElement.querySelectorAll(
+          ".ticker, .shares, .entry-price"
+        );
+      console.log(tableCellEls);
+      editTableCell(tableCellEls);
+      tableCellEls.removeEventListeners;
+    }
   });
 };
 
-// Edit individual stock button
-// console.log(EditIndividualStockBtn);
-// EditIndividualStockBtn.forEach((editBtn) => {
-//   editBtn.addEventListener("click", function () {
-//     console.log("clicked");
-//   });
-// });
-
 /* --------------------- END of Button Control  ---------------------------*/
+
+const editTableCell = function (tableCells) {
+  tableCells.forEach((tabelCell) => {
+    tabelCell.addEventListener("click", function () {
+      if (this.hasAttribute("data-clicked")) return;
+
+      this.setAttribute("data-clicked", "yes");
+      this.setAttribute("data-text", this.innerHTML);
+
+      const input = document.createElement("input");
+      input.classList.add("tableCellInput");
+      input.setAttribute("type", "text");
+
+      console.log(this.classList);
+      console.log(this.getBoundingClientRect().width);
+      input.value = this.textContent;
+      console.log("offsetWidth");
+      console.log(this.offsetWidth);
+      console.log("clientLeft");
+      console.log(this.clientLeft);
+      input.style.width = "100%";
+      // input.style.width = this.offsetWidth * 0.8 + "px";
+      console.log(input.width);
+      input.style.height = this.offsetHeight + -this.clientTop * 2 + "px";
+      console.log("offetHeight");
+      console.log(this.offsetHeight);
+      input.style.display = "inline-block";
+      input.style.fontFamily = "inherit";
+      input.style.fontSize = "inherit";
+      input.style.textAlign = "inherit";
+      input.style.color = "#FFF";
+      input.style.backgroundColor = "gray";
+
+      input.addEventListener("blur", function () {
+        const tdEl = input.parentElement;
+        const originalText = input.parentElement.getAttribute("data-text");
+        const currentText = this.value;
+
+        if (originalText != currentText) {
+          console.log(originalText + " became " + currentText);
+          tdEl.removeAttribute("data-clicked");
+          tdEl.removeAttribute("data-text");
+          tdEl.innerHTML = currentText;
+          tdEl.style.cssText = "padding: 1px;";
+        } else {
+          tdEl.removeAttribute("data-clicked");
+          tdEl.removeAttribute("data-text");
+          tdEl.innerHTML = originalText;
+          tdEl.style.cssText = "padding: 1px;";
+          console.log("No Changes");
+        }
+      });
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") this.blur();
+      });
+
+      this.innerHTML = "";
+      this.style.cssText = "padding: 0px 0px";
+      this.append(input);
+      this.firstElementChild.select();
+    });
+  });
+};
 
 export default {
   removePortfolioHtml,
   addStockFromInput,
   deletePortfolio,
   deleteIndividualStockFromPortfolio,
+  initializeWithSampleData,
   buttonsON,
 };

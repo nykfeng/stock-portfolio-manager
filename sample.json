@@ -1,0 +1,38 @@
+[
+  {
+    "ticker": "DMYQ",
+    "shares": 100,
+    "entry": 10.12,
+    "acquiredDate": "2021-11-27T04:29:53.553Z"
+  },
+  {
+    "ticker": "GGPI",
+    "shares": 120,
+    "entry": 10.59,
+    "acquiredDate": "2021-11-27T04:30:07.788Z"
+  },
+  {
+    "ticker": "AAPL",
+    "shares": 1025,
+    "entry": 133.52,
+    "acquiredDate": "2021-11-30T04:57:25.669Z"
+  },
+  {
+    "ticker": "NVDA",
+    "shares": 254,
+    "entry": 133.52,
+    "acquiredDate": "2021-11-30T04:57:37.616Z"
+  },
+  {
+    "ticker": "MSFT",
+    "shares": 1025,
+    "entry": 212.23,
+    "acquiredDate": "2021-11-30T04:57:51.330Z"
+  },
+  {
+    "ticker": "SPCE",
+    "shares": 152,
+    "entry": 58.23,
+    "acquiredDate": "2021-11-30T04:58:12.676Z"
+  }
+]

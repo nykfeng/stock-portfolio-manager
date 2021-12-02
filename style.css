@@ -138,6 +138,10 @@ td {
   font-weight: bold;
 }
 
+table {
+  padding-block-start: 0px;
+}
+
 #portfolio-table {
   border-top: 3px solid #46819b;
   border-bottom: 3px solid #46819b;
@@ -173,28 +177,36 @@ td {
 
 #portfolio-section,
 header {
-  margin-bottom: 70px;
+  margin-bottom: 30px;
 }
 
 .indivial-row-btns {
   background-color: #f7f7f7;
   text-align: end;
+}
+
+.edit-btn .fa-edit {
+  color: #46819b;
+  cursor: pointer;
+}
+.delete-btn .fa-trash-alt {
+  color: #c93636;
   cursor: pointer;
 }
 
-.edit-btn {
-  color: #46819b;
-}
-.delete-btn {
-  color: #c93636;
-}
-
-.edit-btn:hover {
+.edit-btn .fa-edit:hover {
   color: #1a2f38;
 }
 
-.delete-btn:hover {
+.delete-btn .fa-trash-alt:hover {
   color: #ec6666;
+}
+
+.tableCellInput {
+  outline: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /* --- END OF PORTFOLIO section--- */
@@ -260,6 +272,7 @@ header {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 24px 24px 24px;
+  font-weight: bold;
 }
 
 .stock-chart {
@@ -270,14 +283,17 @@ header {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(4, 25%);
-  letter-spacing: 0.5px;
+  line-height: 22px;
   font-weight: bold;
   background-color: #fff;
   border-radius: 10px;
 }
 
 .highlight {
-  padding: 1px 1.5px;
+  display: inline-block;
+  padding: 1px;
+  border-radius: 1px solid #fff;
+  justify-self: end;
 }
 
 .green-price-box {
@@ -297,8 +313,13 @@ header {
   font-weight: bold;
 }
 
-/* .red-price-box {
-  color: #ca0707;
-} */
+.price-hightlight {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  grid-template-rows: 2fr 1.2fr;
+  justify-content: space-between;
+  column-gap: normal;
+  row-gap: 2px;
+}
 
 /* --- END OF STOCK CARD section --- */

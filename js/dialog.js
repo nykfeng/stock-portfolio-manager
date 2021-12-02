@@ -1,4 +1,4 @@
-export default function () {
+const confirmDeletion = function () {
   const html = `
   <div class="confirm_dialog-background">
       <div class="confirm_dialog-box">
@@ -16,4 +16,28 @@ export default function () {
     </div>
     `;
   document.querySelector("body").insertAdjacentHTML("beforeend", html);
-}
+};
+
+const confirmFetchError = function () {
+  const html = `
+  <div class="confirm_dialog-background">
+      <div class="confirm_dialog-box">
+        <div class="confirm_dialog-title">
+          <span>Error Encounted</span>
+        </div>
+        <div class="confirm_dialog-message">
+          <span>Error encounted while fetching your request. Please make sure your stock data inputs are correct.</span>
+        </div>
+        <div class="confirm_dialog_btn-box">
+          <button class="confirm_button--cancel">OK</button>
+        </div>
+      </div>
+    </div>
+    `;
+  document.querySelector("body").insertAdjacentHTML("beforeend", html);
+};
+
+export default {
+  confirmDeletion,
+  confirmFetchError,
+};

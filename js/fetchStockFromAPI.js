@@ -1,3 +1,5 @@
+import dialog from "./dialog.js";
+
 const fetchStockInfo = async function (stock) {
   try {
     const res = await fetch(
@@ -7,13 +9,17 @@ const fetchStockInfo = async function (stock) {
     return data;
   } catch (err) {
     console.log(err.name);
-    fetchStockInfoError(err.name);
+    fetchStockInfoError();
   }
 };
 
-const fetchStockInfoError = function (error) {
-  // Dialog box to tell the error.
-  // Generate dialog box with the error name
+const fetchStockInfoError = function () {
+  dialog.confirmFetchError();
+  document
+    .querySelector(".confirm_button--cancel")
+    .addEventListener("click", function () {
+      document.querySelector(".confirm_dialog-background").remove();
+    });
 };
 
 export default {
