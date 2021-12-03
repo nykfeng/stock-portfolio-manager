@@ -3,4 +3,8 @@ function formatNumber(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-export default { formatNumber };
+function cleanNumberFormat(numberString) {
+  return numberString.substring(1, numberString.length).replace(/[,]+/g, "");
+}
+
+export default { formatNumber, cleanNumberFormat };

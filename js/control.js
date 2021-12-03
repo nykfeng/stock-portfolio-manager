@@ -16,9 +16,6 @@ const addStockBtn = document.getElementById("submit-stock");
 const deletePortfolioBtn = document.getElementById("delete-all-stock");
 const editPortfolioBtn = document.getElementById("edit-all-stock");
 
-// Hidden button column headers
-const hiddenTableHeaderEls = document.querySelectorAll(".th-place-holder");
-
 stockSharesInputEl.addEventListener("keyup", function () {
   this.value = utility.formatNumber(this.value.replace(/[,]+/g, ""));
 });
@@ -52,7 +49,6 @@ const addStockFromInput = async function () {
   }
 
   if (await fetchStockFromAPI.fetchStockInfo({ ticker: stockTicker })) {
-    //  else
     PortfolioLocalStorage.addStock({
       ticker: stockTicker,
       shares: +stockQuantity,
@@ -91,6 +87,8 @@ const removePortfolioHtml = function () {
 };
 
 const deleteIndividualStockFromPortfolio = function (ticker) {
+  console.log(ticker + " was deleted!");
+
   currentPortfolioStocks.del(ticker);
   PortfolioLocalStorage.deleteStock(ticker);
 };
@@ -184,7 +182,6 @@ const buttonsON = function () {
           ".ticker"
         ).textContent;
       deleteIndividualStockFromPortfolio(ticker);
-      console.log(ticker + " was deleted!");
       removePortfolioHtml();
       render.portfolio();
     }
@@ -197,82 +194,164 @@ const buttonsON = function () {
         e.target.parentElement.parentElement.querySelector(
           ".ticker"
         ).textContent;
-      console.log(ticker + " was edited");
       const tableCellEls =
         e.target.parentElement.parentElement.querySelectorAll(
           ".ticker, .shares, .entry-price"
         );
-      console.log(tableCellEls);
       editTableCell(tableCellEls);
-      tableCellEls.removeEventListeners;
+      // document.addEventListener("click", function (e) {
+      //   const list = e.target.classList;
+      //   if (
+      //     !list.contains("ticker") ||
+      //     !list.contains("shares") ||
+      //     !list.contains("entry-price")
+      //   ) {
+      //     removePortfolioHtml();
+      //     render.portfolio();
+      //   }
+      // });
     }
   });
 };
 
 /* --------------------- END of Button Control  ---------------------------*/
 
+/* --------------------- Start of Editing Table Cells  ---------------------------*/
 const editTableCell = function (tableCells) {
-  tableCells.forEach((tabelCell) => {
-    tabelCell.addEventListener("click", function () {
-      if (this.hasAttribute("data-clicked")) return;
+  tableCells.forEach((tableCell) => {
+    if (tableCell.hasAttribute("data-clicked")) return;
 
-      this.setAttribute("data-clicked", "yes");
-      this.setAttribute("data-text", this.innerHTML);
+    tableCell.setAttribute("data-clicked", "yes");
+    tableCell.setAttribute("data-text", tableCell.innerHTML);
 
-      const input = document.createElement("input");
-      input.classList.add("tableCellInput");
-      input.setAttribute("type", "text");
+    const input = document.createElement("input");
+    input.classList.add("tableCellInput");
+    input.setAttribute("type", "text");
 
-      console.log(this.classList);
-      console.log(this.getBoundingClientRect().width);
-      input.value = this.textContent;
-      console.log("offsetWidth");
-      console.log(this.offsetWidth);
-      console.log("clientLeft");
-      console.log(this.clientLeft);
-      input.style.width = "100%";
-      // input.style.width = this.offsetWidth * 0.8 + "px";
-      console.log(input.width);
-      input.style.height = this.offsetHeight + -this.clientTop * 2 + "px";
-      console.log("offetHeight");
-      console.log(this.offsetHeight);
-      input.style.display = "inline-block";
-      input.style.fontFamily = "inherit";
-      input.style.fontSize = "inherit";
-      input.style.textAlign = "inherit";
-      input.style.color = "#FFF";
-      input.style.backgroundColor = "gray";
+    input.value = tableCell.textContent;
+    input.style.width = "100%";
+    input.style.height =
+      tableCell.offsetHeight + -tableCell.clientTop * 2 + "px";
 
-      input.addEventListener("blur", function () {
-        const tdEl = input.parentElement;
-        const originalText = input.parentElement.getAttribute("data-text");
-        const currentText = this.value;
+    input.style.fontFamily = "inherit";
+    input.style.fontSize = "inherit";
+    input.style.textAlign = "inherit";
+    input.style.color = "inherit";
+    input.style.backgroundColor = "#D1D9D9";
 
-        if (originalText != currentText) {
-          console.log(originalText + " became " + currentText);
-          tdEl.removeAttribute("data-clicked");
-          tdEl.removeAttribute("data-text");
-          tdEl.innerHTML = currentText;
-          tdEl.style.cssText = "padding: 1px;";
-        } else {
-          tdEl.removeAttribute("data-clicked");
-          tdEl.removeAttribute("data-text");
-          tdEl.innerHTML = originalText;
-          tdEl.style.cssText = "padding: 1px;";
-          console.log("No Changes");
+    const replaceOrKeepText = async function () {
+      const tdEl = input.parentElement;
+      const originalText = tdEl.getAttribute("data-text");
+      const currentText = input.value.toUpperCase();
+
+      if (originalText != currentText) {
+        tdEl.removeAttribute("data-clicked");
+        tdEl.removeAttribute("data-text");
+        tdEl.innerHTML = currentText;
+
+        tdEl.style.cssText = "padding: 1px;";
+
+        if (tdEl.classList.contains("ticker")) {
+          if (await fetchStockFromAPI.fetchStockInfo({ ticker: currentText })) {
+            const trEl = tdEl.parentElement;
+            const shares = trEl
+              .querySelector(".shares")
+              .getAttribute("data-text");
+            const entry = utility.cleanNumberFormat(
+              trEl.querySelector(".entry-price").getAttribute("data-text")
+            );
+
+            // Delete the old ticker from local storage and portfolio array
+            deleteIndividualStockFromPortfolio(originalText);
+
+            // Add the new ticker name along with old shares and entry info
+            PortfolioLocalStorage.addStock({
+              ticker: currentText,
+              shares: +shares,
+              entry: +entry,
+              acquiredDate: new Date().toISOString(),
+            });
+            currentPortfolioStocks.add({
+              ticker: currentText,
+              shares: +shares,
+              entry: +entry,
+              acquiredDate: new Date().toISOString(),
+            });
+          }
+          removePortfolioHtml();
+          render.portfolio();
+        } else if (tdEl.classList.contains("shares")) {
+          if (!parseFloat(currentText) || parseFloat(currentText) <= 0) {
+            fetchStockFromAPI.fetchStockInfoError();
+          } else {
+            const trEl = tdEl.parentElement;
+            const ticker = trEl
+              .querySelector(".ticker")
+              .getAttribute("data-text");
+            const entry = utility.cleanNumberFormat(
+              trEl.querySelector(".entry-price").getAttribute("data-text")
+            );
+            const index = currentPortfolioStocks.stocks.findIndex(
+              (stock) => stock.ticker === ticker
+            );
+            currentPortfolioStocks.stocks[index].shares =
+              parseFloat(currentText);
+            console.log("entry is " + entry);
+            PortfolioLocalStorage.editStock(
+              ticker,
+              parseFloat(currentText),
+              parseFloat(entry)
+            );
+            removePortfolioHtml();
+            render.portfolio();
+          }
+        } else if (tdEl.classList.contains("entry-price")) {
+          if (!parseFloat(currentText) || parseFloat(currentText) <= 0) {
+            fetchStockFromAPI.fetchStockInfoError();
+          } else {
+            const trEl = tdEl.parentElement;
+            const ticker = trEl
+              .querySelector(".ticker")
+              .getAttribute("data-text");
+            const shares = trEl
+              .querySelector(".shares")
+              .getAttribute("data-text");
+            const index = currentPortfolioStocks.stocks.findIndex(
+              (stock) => stock.ticker === ticker
+            );
+            currentPortfolioStocks.stocks[index].entry =
+              parseFloat(currentText);
+            PortfolioLocalStorage.editStock(
+              ticker,
+              parseFloat(shares),
+              parseFloat(currentText)
+            );
+            removePortfolioHtml();
+            render.portfolio();
+          }
         }
-      });
-      input.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") this.blur();
-      });
+      } else {
+        tdEl.removeAttribute("data-clicked");
+        tdEl.removeAttribute("data-text");
+        tdEl.innerHTML = originalText;
+        tdEl.style.cssText = "padding: 1px;";
+        removePortfolioHtml();
+        render.portfolio();
+      }
+    };
 
-      this.innerHTML = "";
-      this.style.cssText = "padding: 0px 0px";
-      this.append(input);
-      this.firstElementChild.select();
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") this.blur();
     });
+    input.addEventListener("blur", replaceOrKeepText);
+
+    tableCell.innerHTML = "";
+    tableCell.style.cssText = "padding: 0px 0px";
+    tableCell.append(input);
   });
 };
+
+/* --------------------- END of Editing Table Cells  ---------------------------*/
 
 export default {
   removePortfolioHtml,

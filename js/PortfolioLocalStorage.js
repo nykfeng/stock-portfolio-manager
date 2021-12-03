@@ -9,7 +9,7 @@ export default class PortfolioLocalStorage {
   static addStock(stockToAdd) {
     const stockList = PortfolioLocalStorage.getAllStocks();
     const existing = stockList.find(
-      (stock) => stock.ticker == stockToAdd.ticker
+      (stock) => stock.ticker === stockToAdd.ticker
     );
 
     if (existing) {
@@ -22,6 +22,20 @@ export default class PortfolioLocalStorage {
       existing.entry = newEntry;
     } else {
       stockList.push(stockToAdd);
+    }
+    localStorage.setItem("portfolio-stocks", JSON.stringify(stockList));
+  }
+
+  static editStock(ticker, shares, entry) {
+    const stockList = PortfolioLocalStorage.getAllStocks();
+    const existing = stockList.find((stock) => stock.ticker === ticker);
+
+    console.log("existing is ");
+    console.log(existing);
+
+    if (existing) {
+      existing.shares = shares;
+      existing.entry = entry;
     }
     localStorage.setItem("portfolio-stocks", JSON.stringify(stockList));
   }
