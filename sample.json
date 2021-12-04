@@ -11,12 +11,7 @@
     "entry": 10.59,
     "acquiredDate": "2021-11-27T04:30:07.788Z"
   },
-  {
-    "ticker": "AAPL",
-    "shares": 1025,
-    "entry": 133.52,
-    "acquiredDate": "2021-11-30T04:57:25.669Z"
-  },
+
   {
     "ticker": "NVDA",
     "shares": 254,
@@ -34,5 +29,65 @@
     "shares": 152,
     "entry": 58.23,
     "acquiredDate": "2021-11-30T04:58:12.676Z"
+  },
+  {
+    "ticker": "AAPL",
+    "shares": 10,
+    "entry": 133.52,
+    "acquiredDate": "2021-12-03T02:14:52.247Z"
+  },
+  {
+    "ticker": "NET",
+    "shares": 100,
+    "entry": 88.12,
+    "acquiredDate": "2021-12-04T06:32:09.551Z"
+  },
+  {
+    "ticker": "TSLA",
+    "shares": 10,
+    "entry": 999.19,
+    "acquiredDate": "2021-12-04T06:32:32.261Z"
+  },
+  {
+    "ticker": "SQ",
+    "shares": 100,
+    "entry": 222.55,
+    "acquiredDate": "2021-12-04T06:32:44.806Z"
+  },
+  {
+    "ticker": "QCOM",
+    "shares": 100,
+    "entry": 125.55,
+    "acquiredDate": "2021-12-04T06:33:02.498Z"
+  },
+  {
+    "ticker": "AMD",
+    "shares": 77,
+    "entry": 102.23,
+    "acquiredDate": "2021-12-04T06:33:25.434Z"
+  },
+  {
+    "ticker": "AVGO",
+    "shares": 100,
+    "entry": 523.32,
+    "acquiredDate": "2021-12-04T06:33:33.257Z"
+  },
+  {
+    "ticker": "U",
+    "shares": 102,
+    "entry": 145.23,
+    "acquiredDate": "2021-12-04T06:33:46.047Z"
+  },
+  {
+    "ticker": "DNA",
+    "shares": 1000,
+    "entry": 13.23,
+    "acquiredDate": "2021-12-04T06:33:56.153Z"
+  },
+  {
+    "ticker": "LCID",
+    "shares": 252,
+    "entry": 27.56,
+    "acquiredDate": "2021-12-04T06:34:11.352Z"
   }
 ]

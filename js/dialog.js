@@ -37,7 +37,37 @@ const confirmFetchError = function () {
   document.querySelector("body").insertAdjacentHTML("beforeend", html);
 };
 
+const addStockCardModal = function () {
+  const html = `
+  <div class="confirm_dialog-background">
+      <div class="confirm_dialog-box">
+        <div class="confirm_dialog-title">
+          <span>Add A Stock Card</span>
+        </div>
+        <div class="confirm_dialog-message">
+          <label>Type in the stock ticker you would like to add.</label>
+          <input class="stock-card-input" type="text">
+        </div>
+        <div class="confirm_dialog_btn-box">
+          <button class="confirm_button--submit">Submit</button>
+          <button class="confirm_button--cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    `;
+  document.querySelector("body").insertAdjacentHTML("beforeend", html);
+};
+
+// To remove the dialog box and its background
+const removeDialogBox = function (e) {
+  if (e.target.classList.contains("confirm_dialog-background")) {
+    document.querySelector(".confirm_dialog-background").remove();
+  }
+};
+
 export default {
   confirmDeletion,
   confirmFetchError,
+  addStockCardModal,
+  removeDialogBox,
 };

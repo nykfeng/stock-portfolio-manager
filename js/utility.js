@@ -23,6 +23,11 @@ const formatStockCardCompanyName = function (name) {
   return name;
 };
 
+const formatStockExchangeName = function (name) {
+  if (name.toUpperCase().includes("NEW YORK STOCK EXCHANGE")) return "NYSE";
+  else return name;
+};
+
 const formatPortfolioColor = function (plusMinus) {
   return plusMinus >= 0 ? "green-price-box" : "red-price-box";
 };
@@ -33,4 +38,5 @@ export default {
   formatStockCardCompanyName,
   calculateMarketCapUnit,
   formatPortfolioColor,
+  formatStockExchangeName,
 };

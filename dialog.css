@@ -17,7 +17,7 @@
 .confirm_dialog-box {
   width: 100%;
   max-width: 600px;
-  height: 180px;
+  min-height: 180px;
   background: white;
   font-size: 26px;
 
@@ -32,7 +32,7 @@
 
 .confirm_dialog-title {
   background-color: #c93636;
-  padding: 5px;
+  padding: 5px 10px 5px 10px;
   font-weight: bold;
   color: #fff;
   font-size: 28px;
@@ -40,7 +40,7 @@
 
 .confirm_dialog-message,
 .confirm_dialog_btn-box {
-  padding: 5px;
+  padding: 5px 10px 5px 10px;
 }
 
 .confirm_dialog_btn-box {
@@ -51,18 +51,34 @@
 }
 
 .confirm_button--ok,
-.confirm_button--cancel {
+.confirm_button--cancel,
+.confirm_button--submit {
   width: 100px;
   font-size: 30px;
   cursor: pointer;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.confirm_button--ok {
+.confirm_button--ok,
+.confirm_button--submit {
   background-color: #46819b;
   color: #fff;
-  border-radius: 10px;
 }
 
+.confirm_button--submit,
 .confirm_button--cancel {
-  border-radius: 10px;
+  width: 110px;
+}
+
+.stock-card-input {
+  width: 150px;
+  height: 35px;
+  font-size: 30px;
+  border: 2px solid #46819b;
+  border-radius: 5px;
+}
+
+.stock-card-input:focus {
+  outline: none;
 }

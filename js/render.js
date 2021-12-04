@@ -4,6 +4,7 @@ import fetchStockFromAPI from "./fetchStockFromAPI.js";
 
 const portfolioTableEl = document.getElementById("portfolio-table");
 const stockCardSection = document.getElementById("stock-card-section");
+const stockCardAdditionEl = document.querySelector(".stock-card-adding");
 
 const portfolio = function () {
   const portfolioBodyEl = document.createElement("tbody");
@@ -97,7 +98,7 @@ const stockCard = async function (ticker) {
   });
   const html = await stockCardHtml(stockAPIData);
 
-  stockCardSection.insertAdjacentHTML("afterbegin", html);
+  stockCardAdditionEl.insertAdjacentHTML("beforebegin", html);
 };
 
 const stockCardHtml = async function (stock) {
@@ -117,7 +118,9 @@ const stockCardHtml = async function (stock) {
       logoSrc.url
     }"></span>
     <div class="stock-last-price">
-    <span>${stock.primaryExchange}: ${stock.symbol}</span>
+    <span>${utility.formatStockExchangeName(stock.primaryExchange)}: ${
+    stock.symbol
+  }</span>
     <div class="price-hightlight">
     
     <span>Latest Price: </span>

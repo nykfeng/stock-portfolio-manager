@@ -199,30 +199,50 @@ const buttonsON = function () {
           ".ticker, .shares, .entry-price"
         );
       editTableCell(tableCellEls);
-      // document.addEventListener("click", function (e) {
-      //   const list = e.target.classList;
-      //   if (
-      //     !list.contains("ticker") ||
-      //     !list.contains("shares") ||
-      //     !list.contains("entry-price")
-      //   ) {
-      //     removePortfolioHtml();
-      //     render.portfolio();
-      //   }
-      // });
     }
   });
 
   // Stock card delete button
   const stockCardSectionEl = document.querySelector("#stock-card-section");
   stockCardSectionEl.addEventListener("click", function (e) {
-    console.log(e.target);
     if (e.target.classList.contains("close-stock-card")) {
       const deleteStockCard =
         e.target.parentElement.parentElement.parentElement;
       deleteStockCard.remove();
     }
   });
+
+  // Stock card addition button
+  const stockCardAdditionEl = document.querySelector(".stock-card-adding");
+  stockCardAdditionEl.addEventListener("click", function (e) {
+    dialog.addStockCardModal();
+
+    const dialogConfirmBtn = document.querySelector(".confirm_button--submit");
+    const tickerInputEl = document.querySelector(".stock-card-input");
+    tickerInputEl.focus();
+
+    tickerInputEl.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") dialogConfirmBtn.click();
+    });
+
+    dialogConfirmBtn.addEventListener("click", async function () {
+      const tickerInput = tickerInputEl.value;
+      document.querySelector(".confirm_dialog-background").remove();
+      if (await fetchStockFromAPI.fetchStockInfo({ ticker: tickerInput })) {
+        render.stockCard(tickerInput);
+      }
+    });
+
+    document
+      .querySelector(".confirm_button--cancel")
+      .addEventListener("click", function () {
+        document.querySelector(".confirm_dialog-background").remove();
+      });
+  });
+
+  // To listen to empty space out of modal dialog box
+  const bodyEl = document.querySelector("body");
+  bodyEl.addEventListener("click", dialog.removeDialogBox);
 };
 
 /* --------------------- END of Button Control  ---------------------------*/

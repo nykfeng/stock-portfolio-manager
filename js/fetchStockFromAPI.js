@@ -10,6 +10,7 @@ const fetchStockInfo = async function (stock) {
   } catch (err) {
     console.log(err.name);
     fetchStockInfoError();
+    // dialog.removeDialogBox();
   }
 };
 

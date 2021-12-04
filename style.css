@@ -3,11 +3,23 @@ body {
   background-color: #f7f7f7;
 }
 
+header {
+  margin-bottom: 30px;
+}
+
 .title {
   background-color: #1a2f38;
   color: #fff;
   text-align: center;
   font-size: 32px;
+}
+
+.stock-card-header {
+  background-color: #1a2f38;
+  color: #fff;
+  text-align: center;
+  font-size: 32px;
+  grid-column: 1 / -1;
 }
 
 .hide-it {
@@ -120,6 +132,7 @@ body {
   justify-content: center;
   width: 80%;
   margin: 0 auto;
+  margin-bottom: 80px;
   display: flex;
 
   justify-content: space-between;
@@ -150,7 +163,6 @@ table {
 #table-header-row,
 .stock-info-row {
   background-color: #fff;
-  margin-bottom: 70px;
 }
 
 #table-header-row {
@@ -173,11 +185,6 @@ table {
 .th-sort-pending::before {
   content: "\21C4";
   margin-right: 2px;
-}
-
-#portfolio-section,
-header {
-  margin-bottom: 30px;
 }
 
 .indivial-row-btns {
@@ -217,6 +224,7 @@ header {
   font-size: 13px;
   width: 80%;
   margin: 0 auto;
+  margin-bottom: 70px;
   color: black;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
@@ -370,3 +378,10 @@ header {
 }
 
 /* --- END OF STOCK CARD section --- */
+
+hr,
+footer {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}

@@ -33,15 +33,15 @@ const storingAPIData = function (APIData) {
   }
 };
 
-const calculateStockReturn = function () {
-  stocks.forEach((stock) => {
-    stock.totalPaid = stock.shares * stock.entry;
-    stock.marketValue = stock.shares * stock.latestPrice;
-    stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
-    stock.overallGainPercent =
-      ((stock.latestPrice - stock.entry) / stock.entry) * 100;
-  });
-};
+// const calculateStockReturn = function () {
+//   stocks.forEach((stock) => {
+//     stock.totalPaid = stock.shares * stock.entry;
+//     stock.marketValue = stock.shares * stock.latestPrice;
+//     stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
+//     stock.overallGainPercent =
+//       ((stock.latestPrice - stock.entry) / stock.entry) * 100;
+//   });
+// };
 
 export default {
   stocks,
@@ -49,5 +49,4 @@ export default {
   add,
   del,
   storingAPIData,
-  calculateStockReturn,
 };
