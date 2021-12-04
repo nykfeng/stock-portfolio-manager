@@ -215,13 +215,35 @@ header {
 
 #stock-card-section {
   font-size: 13px;
-
+  width: 80%;
+  margin: 0 auto;
   color: black;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
   gap: 1rem;
 
   justify-content: center;
+}
+
+.stock-card-adding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(#d6d6d6, #f7f7f7);
+  font-size: 200px;
+  color: #1a2f38;
+  cursor: pointer;
+}
+
+.stock-card-adding:hover {
+  color: #fff;
+  background: linear-gradient(#f7f7f7, #d6d6d6);
+}
+
+.stock-card-adding:active {
+  transform: scale(0.96);
 }
 
 .stock-card {
@@ -244,15 +266,41 @@ header {
 
 .stock-basics {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
   grid-template-rows: 20px 72px;
   row-gap: 5px;
 }
 
-.stock-company-name {
-  background-color: white;
+.stock-card-title {
   grid-column: 1 / 3;
-  grid-row: 1 / 1;
+  display: flex;
+}
+
+.close-stock-card {
+  border: 1px solid #c93636;
+  background-color: #fff;
+  color: #c93636;
+  border-radius: 4px;
+  transform: scale(1.5);
+  display: none;
+  cursor: pointer;
+}
+
+.stock-card:hover .close-stock-card {
+  display: block;
+}
+
+.close-stock-card:hover {
+  color: #ec6666;
+  border: 1px solid #ec6666;
+}
+
+.close-stock-card:active {
+  transform: scale(1.4);
+}
+
+.stock-company-name {
+  flex-grow: 1;
+  background-color: white;
   font-size: 18px;
   height: 20px;
   font-weight: bold;
@@ -260,6 +308,9 @@ header {
 
 .stock-logo {
   grid-column: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stock-logo-img {
@@ -301,10 +352,6 @@ header {
   background-color: #3aad5c;
   color: #fff;
 }
-
-/* .green-price-box {
-  color: #3aad5c;
-} */
 
 .red-price-box {
   border-radius: 5px;

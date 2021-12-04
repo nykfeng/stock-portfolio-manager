@@ -12,7 +12,7 @@ const renderStockCard = function (stock) {
   let html = `
   <div class="stock-card">
   <div class="stock-basics">
-    <span class="stock-company-name">${formattCompanyName(
+    <span class="stock-company-name">${formatStockCardCompanyName(
       stock.companyName
     )}</span>
     <span class="stock-logo" data-logo><img class="stock-logo-img" src="./images/${
@@ -56,7 +56,7 @@ const renderStockCard = function (stock) {
   stockCardSection.insertAdjacentHTML("beforeend", html);
 };
 
-const formattCompanyName = function (name) {
+const formatStockCardCompanyName = function (name) {
   if (name.includes(" - Class"))
     return name.substring(0, name.indexOf("- Class"));
   return name;

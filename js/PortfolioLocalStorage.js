@@ -30,9 +30,6 @@ export default class PortfolioLocalStorage {
     const stockList = PortfolioLocalStorage.getAllStocks();
     const existing = stockList.find((stock) => stock.ticker === ticker);
 
-    console.log("existing is ");
-    console.log(existing);
-
     if (existing) {
       existing.shares = shares;
       existing.entry = entry;

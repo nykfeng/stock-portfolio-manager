@@ -7,4 +7,30 @@ function cleanNumberFormat(numberString) {
   return numberString.substring(1, numberString.length).replace(/[,]+/g, "");
 }
 
-export default { formatNumber, cleanNumberFormat };
+const calculateMarketCapUnit = function (marketCap) {
+  const markCap =
+    parseInt(marketCap) >= 1000000000000
+      ? (parseInt(marketCap) / 1000000000000).toFixed(2) + " Trillion"
+      : parseInt(marketCap) >= 1000000000
+      ? (parseInt(marketCap) / 1000000000).toFixed(2) + " Billion"
+      : (parseInt(marketCap) / 1000000).toFixed(2) + " Million";
+  return markCap;
+};
+
+const formatStockCardCompanyName = function (name) {
+  if (name.includes(" - Class"))
+    return name.substring(0, name.indexOf("- Class"));
+  return name;
+};
+
+const formatPortfolioColor = function (plusMinus) {
+  return plusMinus >= 0 ? "green-price-box" : "red-price-box";
+};
+
+export default {
+  formatNumber,
+  cleanNumberFormat,
+  formatStockCardCompanyName,
+  calculateMarketCapUnit,
+  formatPortfolioColor,
+};

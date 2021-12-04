@@ -19,8 +19,6 @@ init();
 render.portfolio();
 control.buttonsON();
 
-stockCard("AAPL");
-stockCard("NVDA");
-stockCard("FB");
-stockCard("MSFT");
-stockCard("GOOG");
+["FB", "AMZN", "AAPL", "NVDA", "GOOG"].forEach(async (stock) => {
+  render.stockCard(stock);
+});

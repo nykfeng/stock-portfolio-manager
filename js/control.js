@@ -212,6 +212,17 @@ const buttonsON = function () {
       // });
     }
   });
+
+  // Stock card delete button
+  const stockCardSectionEl = document.querySelector("#stock-card-section");
+  stockCardSectionEl.addEventListener("click", function (e) {
+    console.log(e.target);
+    if (e.target.classList.contains("close-stock-card")) {
+      const deleteStockCard =
+        e.target.parentElement.parentElement.parentElement;
+      deleteStockCard.remove();
+    }
+  });
 };
 
 /* --------------------- END of Button Control  ---------------------------*/
@@ -283,6 +294,8 @@ const editTableCell = function (tableCells) {
         } else if (tdEl.classList.contains("shares")) {
           if (!parseFloat(currentText) || parseFloat(currentText) <= 0) {
             fetchStockFromAPI.fetchStockInfoError();
+            removePortfolioHtml();
+            render.portfolio();
           } else {
             const trEl = tdEl.parentElement;
             const ticker = trEl
@@ -306,8 +319,12 @@ const editTableCell = function (tableCells) {
             render.portfolio();
           }
         } else if (tdEl.classList.contains("entry-price")) {
-          if (!parseFloat(currentText) || parseFloat(currentText) <= 0) {
+          const newEntry = currentText.replace(/[$]/g, ""); // Replace $ sign from number $160 -> 160
+
+          if (!parseFloat(newEntry) || parseFloat(newEntry) <= 0) {
             fetchStockFromAPI.fetchStockInfoError();
+            removePortfolioHtml();
+            render.portfolio();
           } else {
             const trEl = tdEl.parentElement;
             const ticker = trEl
@@ -319,12 +336,11 @@ const editTableCell = function (tableCells) {
             const index = currentPortfolioStocks.stocks.findIndex(
               (stock) => stock.ticker === ticker
             );
-            currentPortfolioStocks.stocks[index].entry =
-              parseFloat(currentText);
+            currentPortfolioStocks.stocks[index].entry = parseFloat(newEntry);
             PortfolioLocalStorage.editStock(
               ticker,
               parseFloat(shares),
-              parseFloat(currentText)
+              parseFloat(newEntry)
             );
             removePortfolioHtml();
             render.portfolio();
