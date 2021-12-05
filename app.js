@@ -18,10 +18,10 @@ const init = function () {
 init();
 
 // Sample data for demo
-if (currentPortfolio.stocks.length === 0) {
-  control.initializeSamplePortfolio();
-  control.initializeSampleStockCards();
-}
+// if (currentPortfolio.stocks.length === 0) {
+//   control.initializeSamplePortfolio();
+//   control.initializeSampleStockCards();
+// }
 
 render.indexCharts();
 render.portfolio();

@@ -31,6 +31,11 @@ const formatPortfolioColor = function (plusMinus) {
   return plusMinus >= 0 ? "green-price-box" : "red-price-box";
 };
 
+const removeColorBox = function (boxElement) {
+  boxElement.classList.remove("red-price-box");
+  boxElement.classList.remove("green-price-box");
+};
+
 export default {
   formatNumber,
   cleanNumberFormat,
@@ -38,4 +43,5 @@ export default {
   calculateMarketCapUnit,
   formatPortfolioColor,
   formatStockExchangeName,
+  removeColorBox,
 };

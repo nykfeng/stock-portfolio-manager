@@ -128,6 +128,13 @@ const portfolioOverview = function () {
       currentPortfolio.overview.portfolioValue.toFixed(2)
     );
 
+    // Remove previous color box class
+    utility.removeColorBox(dailyChange);
+    utility.removeColorBox(dailyChangePercent);
+    utility.removeColorBox(portfolioChange);
+    utility.removeColorBox(portfolioChangePercent);
+    utility.removeColorBox(portfolioValue);
+
     //----- Adding red or green box to these numbers -------//
     dailyChange.classList.add(
       `${utility.formatPortfolioColor(currentPortfolio.overview.dailyChange)}`
@@ -158,12 +165,10 @@ const portfolioOverview = function () {
 const reCalcPortfolioOverview = function () {
   currentPortfolio.initializeOverview();
   currentPortfolio.stocks.forEach((stock) => {
-    console.log(`daily change ${currentPortfolio.overview.dailyChange}`);
     currentPortfolio.overview.dailyChange += stock.change;
     currentPortfolio.overview.portfolioValue += stock.marketValue;
     currentPortfolio.overview.portfolioChange += stock.overallGain;
     currentPortfolio.overview.portfolioPaid += stock.totalPaid;
-    console.log(`daily change ${currentPortfolio.overview.dailyChange}`);
   });
 };
 
@@ -210,14 +215,14 @@ const stockCardHtml = async function (stock) {
     <div class="price-hightlight">
     
     <span>Latest Price: </span>
-    <span class="highlight ${
-      stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
-    }">${stock.latestPrice}
+    <span class="highlight ${utility.formatPortfolioColor(
+      stock.changePercent
+    )}">${stock.latestPrice}
     </span>
     <span>Latest Change: </span>
-    <span class="highlight ${
-      stock.changePercent >= 0 ? "green-price-box" : "red-price-box"
-    }">${(parseFloat(stock.changePercent) * 100).toFixed(2)}%
+    <span class="highlight ${utility.formatPortfolioColor(
+      stock.changePercent
+    )}">${(parseFloat(stock.changePercent) * 100).toFixed(2)}%
     </span>
     </div>
   </div>
