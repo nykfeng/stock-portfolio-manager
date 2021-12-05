@@ -18,7 +18,7 @@ const confirmDeletion = function () {
   document.querySelector("body").insertAdjacentHTML("beforeend", html);
 };
 
-const confirmFetchError = function () {
+const confirmFetchError = function (stock) {
   const html = `
   <div class="confirm_dialog-background">
       <div class="confirm_dialog-box">
@@ -26,7 +26,9 @@ const confirmFetchError = function () {
           <span>Error Encounted</span>
         </div>
         <div class="confirm_dialog-message">
-          <span>Error encounted while fetching your request. Please make sure your stock data inputs are correct.</span>
+          <span>Error encounted while fetching your request for <strong>${
+            stock.ticker ? stock.ticker : stock
+          }</strong>. Please make sure your stock data inputs are correct.</span>
         </div>
         <div class="confirm_dialog_btn-box">
           <button class="confirm_button--cancel">OK</button>
@@ -59,10 +61,24 @@ const addStockCardModal = function () {
 };
 
 // To remove the dialog box and its background
-const removeDialogBox = function (e) {
-  if (e.target.classList.contains("confirm_dialog-background")) {
-    document.querySelector(".confirm_dialog-background").remove();
-  }
+const removeDialogBox = function () {
+  document.querySelector("body").addEventListener("click", function (e) {
+    if (
+      e.target.classList.contains("confirm_dialog-background") ||
+      e.target.classList.contains("confirm_button--cancel")
+    ) {
+      if (document.querySelector(".confirm_dialog-background"))
+        document.querySelector(".confirm_dialog-background").remove();
+    }
+  });
+  // if (e.target.classList.contains("confirm_dialog-background")) {
+  //   document.querySelector(".confirm_dialog-background").remove();
+  // }
+  // document
+  //   .querySelector(".confirm_button--cancel")
+  //   .addEventListener("click", function () {
+  //     document.querySelector(".confirm_dialog-background").remove();
+  //   });
 };
 
 export default {

@@ -1,3 +1,5 @@
+import currentStockCards from "./currentStockCards.js";
+
 const stocks = [];
 const overview = [];
 
@@ -52,6 +54,7 @@ const initializeOverview = function () {
   overview.portfolioChange = 0;
   overview.portfolioChangePercent = 0;
   overview.portfolioValue = 0;
+  overview.portfolioPaid = 0;
 };
 
 export default {

@@ -8,19 +8,14 @@ const fetchStockInfo = async function (stock) {
     const data = await res.json();
     return data;
   } catch (err) {
-    console.log(err.name);
-    fetchStockInfoError();
-    // dialog.removeDialogBox();
+    console.log(`${err.name} while fetching ${stock.ticker}`);
+    fetchStockInfoError(stock);
   }
 };
 
-const fetchStockInfoError = function () {
-  dialog.confirmFetchError();
-  document
-    .querySelector(".confirm_button--cancel")
-    .addEventListener("click", function () {
-      document.querySelector(".confirm_dialog-background").remove();
-    });
+const fetchStockInfoError = function (stock) {
+  dialog.confirmFetchError(stock);
+  dialog.removeDialogBox();
 };
 
 const chart = async function (stockTicker) {

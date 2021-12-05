@@ -23,17 +23,24 @@ if (currentPortfolio.stocks.length === 0) {
   control.initializeSampleStockCards();
 }
 
-render.portfolioNew();
+render.indexCharts();
+render.portfolio();
 
 control.buttonsON();
+
 currentStockCards.stocks.forEach(async (stock) => {
   render.stockCard(stock);
 });
 
-// setTimeout(() => {
-//   currentPortfolio.calculatingPortfolio();
-// }, 1000);
+setTimeout(() => {
+  console.log("---------------------------------");
+  console.log(currentPortfolio.overview);
 
-// console.log(currentPortfolio.calculatingPortfolio());
+  currentPortfolio.overview.forEach((overview) => {
+    console.log(overview);
+  }, 5000);
+});
 
-render.indexCharts();
+// render.portfolioOverview();
+
+// setTimeout(render.portfolioOverview, 1000);

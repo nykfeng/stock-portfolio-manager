@@ -1,3 +1,6 @@
+import currentPortfolio from "./currentPortfolio.js";
+import currentStockCards from "./currentStockCards.js";
+
 export default class BrowserLocalStorage {
   static getAllStocks() {
     const stockList = JSON.parse(
@@ -44,6 +47,19 @@ export default class BrowserLocalStorage {
     );
 
     localStorage.setItem("portfolio-stocks", JSON.stringify(newStockList));
+  }
+
+  static sortStock(stockProperty, asc = true) {
+    let stockList = BrowserLocalStorage.getAllStocks();
+    const dirModifier = asc ? 1 : -1;
+
+    stockList.sort((a, b) => {
+      return a[stockProperty] < b[stockProperty]
+        ? dirModifier * 1
+        : dirModifier * -1;
+    });
+
+    localStorage.setItem("portfolio-stocks", JSON.stringify(stockList));
   }
 
   static getAllStockCards() {

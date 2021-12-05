@@ -235,18 +235,23 @@ table {
 .portfolio-overview {
   background-color: #fff;
   margin: 30px 0;
-  padding: 20px;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
+
+  justify-content: flex-end;
+
+  border-top: 3px solid #46819b;
+  border-bottom: 3px solid #46819b;
 }
 
 .portfolio-overview-metrics {
-  display: inline-block;
-  width: 200px;
-  height: 35px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 20px;
   font-weight: bold;
+  border: 2px solid #f7f7f7;
 }
 
 /* --- END OF PORTFOLIO section--- */

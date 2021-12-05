@@ -11,40 +11,15 @@ const portfolio = function () {
   const portfolioBodyEl = document.createElement("tbody");
   portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
 
+  // For calculating portfolio performance
   currentPortfolio.initializeOverview();
-
-  // Rendering from local array memory, which has been updated by pulling Local Storage first
-
-  currentPortfolio.stocks.forEach(async (stock) => {
-    const APIData = await fetchStockFromAPI.fetchStockInfo(stock);
-    if (!APIData) return;
-    stock.change = APIData.change * stock.shares;
-    stock.changePercent = APIData.changePercent;
-    stock.latestPrice = APIData.latestPrice;
-    stock.totalPaid = stock.shares * stock.entry;
-    stock.marketValue = stock.shares * stock.latestPrice;
-    stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
-    stock.overallGainPercent =
-      ((stock.latestPrice - stock.entry) / stock.entry) * 100;
-
-    const html = portfolioRowHtml(stock);
-    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
-
-    currentPortfolio.overview.dailyChange += stock.change;
-    currentPortfolio.overview.portfolioValue += stock.marketValue;
-    currentPortfolio.overview.portfolioChange += stock.overallGain;
-  });
-};
-
-const portfolioNew = function () {
-  const portfolioBodyEl = document.createElement("tbody");
-  portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
 
   currentPortfolio.stocks.forEach(async (stock) => {
     const html = portfolioRowFixeValueHtml(stock);
     portfolioBodyEl.insertAdjacentHTML("beforeend", html);
     await portfolioRowDynamicValueHtml(stock);
   });
+  portfolioOverview();
 };
 
 const portfolioRowHtml = function (stock) {
@@ -105,15 +80,7 @@ const indexCharts = function () {
     const intradayPriceData = await fetchStockFromAPI.chart(index);
     const chartData = [];
 
-    // if (!intradayPriceData) return;
     for (let i = 0; i < intradayPriceData.length; i++) {
-      // console.log(
-      //   index +
-      //     ": " +
-      //     intradayPriceData[i].minute +
-      //     ": " +
-      //     intradayPriceData[i].close
-      // );
       chartData.push([intradayPriceData[i].minute, intradayPriceData[i].close]);
     }
 
@@ -122,13 +89,82 @@ const indexCharts = function () {
 };
 
 const portfolioOverview = function () {
-  const dailyChange = document.querySelector(".daily-change");
-  const dailyChangePercent = document.querySelector(".daily-changePercent");
+  const dailyChange = document.querySelector(".portfolio-daily-change");
+  const dailyChangePercent = document.querySelector(
+    ".portfolio-daily-changePercent"
+  );
   const portfolioChange = document.querySelector(".portfolio-change");
   const portfolioChangePercent = document.querySelector(
     ".portfolio-changePercent"
   );
   const portfolioValue = document.querySelector(".portfolio-value");
+
+  setTimeout(function () {
+    // Need to calculate the overall daily change percentage
+    currentPortfolio.overview.dailyChangePercent =
+      currentPortfolio.overview.dailyChange /
+      (currentPortfolio.overview.portfolioValue -
+        currentPortfolio.overview.dailyChange);
+
+    // Need to calculate the overall portfolio change percentage
+    currentPortfolio.overview.portfolioChangePercent =
+      currentPortfolio.overview.portfolioChange /
+      currentPortfolio.overview.portfolioPaid;
+
+    //----- Updating HTML content with the numbers -------//
+    dailyChange.textContent = utility.formatNumber(
+      currentPortfolio.overview.dailyChange.toFixed(2)
+    );
+    dailyChangePercent.textContent = `${(
+      currentPortfolio.overview.dailyChangePercent * 100
+    ).toFixed(2)}%`;
+    portfolioChange.textContent = utility.formatNumber(
+      currentPortfolio.overview.portfolioChange.toFixed(2)
+    );
+    portfolioChangePercent.textContent = `${(
+      currentPortfolio.overview.portfolioChangePercent * 100
+    ).toFixed(2)}%`;
+    portfolioValue.textContent = utility.formatNumber(
+      currentPortfolio.overview.portfolioValue.toFixed(2)
+    );
+
+    //----- Adding red or green box to these numbers -------//
+    dailyChange.classList.add(
+      `${utility.formatPortfolioColor(currentPortfolio.overview.dailyChange)}`
+    );
+    dailyChangePercent.classList.add(
+      `${utility.formatPortfolioColor(
+        currentPortfolio.overview.dailyChangePercent
+      )}`
+    );
+    portfolioChange.classList.add(
+      `${utility.formatPortfolioColor(
+        currentPortfolio.overview.portfolioChange
+      )}`
+    );
+    portfolioChangePercent.classList.add(
+      `${utility.formatPortfolioColor(
+        currentPortfolio.overview.portfolioChangePercent
+      )}`
+    );
+    portfolioValue.classList.add(
+      `${utility.formatPortfolioColor(
+        currentPortfolio.overview.portfolioValue
+      )}`
+    );
+  }, 1000);
+};
+
+const reCalcPortfolioOverview = function () {
+  currentPortfolio.initializeOverview();
+  currentPortfolio.stocks.forEach((stock) => {
+    console.log(`daily change ${currentPortfolio.overview.dailyChange}`);
+    currentPortfolio.overview.dailyChange += stock.change;
+    currentPortfolio.overview.portfolioValue += stock.marketValue;
+    currentPortfolio.overview.portfolioChange += stock.overallGain;
+    currentPortfolio.overview.portfolioPaid += stock.totalPaid;
+    console.log(`daily change ${currentPortfolio.overview.dailyChange}`);
+  });
 };
 
 const reArrangePortfolioBySort = function () {
@@ -278,6 +314,11 @@ const portfolioRowDynamicValueHtml = async function (stock) {
   stock.overallGainPercent =
     ((stock.latestPrice - stock.entry) / stock.entry) * 100;
 
+  currentPortfolio.overview.dailyChange += stock.change;
+  currentPortfolio.overview.portfolioValue += stock.marketValue;
+  currentPortfolio.overview.portfolioChange += stock.overallGain;
+  currentPortfolio.overview.portfolioPaid += stock.totalPaid;
+
   const currentRowEl = document.querySelector(`.ticker-${stock.ticker}`);
 
   currentRowEl.querySelector(
@@ -328,5 +369,6 @@ export default {
   stockCard,
   getCompanyLogoFromAPI,
   indexCharts,
-  portfolioNew,
+  portfolioOverview,
+  reCalcPortfolioOverview,
 };

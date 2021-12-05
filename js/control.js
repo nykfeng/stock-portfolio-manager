@@ -45,7 +45,7 @@ const addStockFromInput = async function () {
     parseFloat(stockEntry) <= 0 ||
     parseFloat(stockQuantity) <= 0
   ) {
-    fetchStockFromAPI.fetchStockInfoError();
+    fetchStockFromAPI.fetchStockInfoError(stockTicker);
     return;
   }
 
@@ -72,18 +72,24 @@ const addStockFromInput = async function () {
 const deletePortfolio = function () {
   localStorage.removeItem("portfolio-stocks");
   currentPortfolio.stocks.splice(0, currentPortfolio.stocks.length);
+  currentPortfolio.initializeOverview();
   removePortfolioHtml();
 };
 
+// Remove the html of the portfolio
 const removePortfolioHtml = function () {
   const stockPortfolioBody = document.querySelector("#portfolio-table tbody");
   if (stockPortfolioBody) stockPortfolioBody.remove();
+  render.portfolioOverview();
 };
 
+// Call back function for deleting individual stock from localStorage and local array
 const deleteIndividualStockFromPortfolio = function (ticker) {
   currentPortfolio.del(ticker);
   BrowserLocalStorage.deleteStock(ticker);
 };
+
+/* -------------------- Initialize with content  ---------------------------*/
 
 const initializeSamplePortfolio = function () {
   fetch("./samplePortfolio.json")
@@ -108,6 +114,7 @@ const initializeSampleStockCards = function () {
 /* -------------------- START of Button Control  ---------------------------*/
 
 const buttonsON = function () {
+  // Listening for sorting btn
   tableHeaderEls.forEach(function (tableHeader) {
     tableHeader.addEventListener("click", function () {
       const asc = this.classList.contains("th-sort-asc");
@@ -115,6 +122,7 @@ const buttonsON = function () {
       this.classList.remove("th-sort-pending");
 
       sortingPortfolioColumns(tableHeader.dataset.column, asc);
+      BrowserLocalStorage.sortStock(tableHeader.dataset.column, asc);
 
       this.classList.toggle("th-sort-asc", !asc);
       this.classList.toggle("th-sort-desc", asc);
@@ -149,6 +157,7 @@ const buttonsON = function () {
       .querySelector(".confirm_button--ok")
       .addEventListener("click", function () {
         deletePortfolio();
+        render.portfolioOverview();
         document.querySelector(".confirm_dialog-background").remove();
       });
 
@@ -182,6 +191,8 @@ const buttonsON = function () {
       const ticker = currentRow.querySelector(".ticker").textContent;
       deleteIndividualStockFromPortfolio(ticker);
       currentRow.remove();
+      render.reCalcPortfolioOverview();
+      render.portfolioOverview();
     }
 
     if (
@@ -378,7 +389,7 @@ const editTableCell = function (tableCells) {
         tdEl.style.cssText = "padding: 1px;";
 
         removePortfolioHtml();
-        render.portfolioNew();
+        render.portfolio();
       }
     };
 
