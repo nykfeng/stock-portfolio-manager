@@ -1,6 +1,7 @@
-import currentPortfolioStocks from "./currentPortfolioStocks.js";
+import currentPortfolio from "./currentPortfolio.js";
 import utility from "./utility.js";
 import fetchStockFromAPI from "./fetchStockFromAPI.js";
+import googleChart from "./googleChart.js";
 
 const portfolioTableEl = document.getElementById("portfolio-table");
 const stockCardSection = document.getElementById("stock-card-section");
@@ -10,9 +11,11 @@ const portfolio = function () {
   const portfolioBodyEl = document.createElement("tbody");
   portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
 
+  currentPortfolio.initializeOverview();
+
   // Rendering from local array memory, which has been updated by pulling Local Storage first
 
-  currentPortfolioStocks.stocks.forEach(async (stock) => {
+  currentPortfolio.stocks.forEach(async (stock) => {
     const APIData = await fetchStockFromAPI.fetchStockInfo(stock);
     if (!APIData) return;
     stock.change = APIData.change * stock.shares;
@@ -26,6 +29,21 @@ const portfolio = function () {
 
     const html = portfolioRowHtml(stock);
     portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+
+    currentPortfolio.overview.dailyChange += stock.change;
+    currentPortfolio.overview.portfolioValue += stock.marketValue;
+    currentPortfolio.overview.portfolioChange += stock.overallGain;
+  });
+};
+
+const portfolioNew = function () {
+  const portfolioBodyEl = document.createElement("tbody");
+  portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
+
+  currentPortfolio.stocks.forEach(async (stock) => {
+    const html = portfolioRowFixeValueHtml(stock);
+    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+    await portfolioRowDynamicValueHtml(stock);
   });
 };
 
@@ -80,13 +98,45 @@ const portfolioRowHtml = function (stock) {
     `;
 };
 
+const indexCharts = function () {
+  const index = ["SPY", "QQQ", "IWM"];
+
+  index.forEach(async (index) => {
+    const intradayPriceData = await fetchStockFromAPI.chart(index);
+    const chartData = [];
+
+    // if (!intradayPriceData) return;
+    for (let i = 0; i < intradayPriceData.length; i++) {
+      // console.log(
+      //   index +
+      //     ": " +
+      //     intradayPriceData[i].minute +
+      //     ": " +
+      //     intradayPriceData[i].close
+      // );
+      chartData.push([intradayPriceData[i].minute, intradayPriceData[i].close]);
+    }
+
+    googleChart.drawChart(index, chartData);
+  });
+};
+
+const portfolioOverview = function () {
+  const dailyChange = document.querySelector(".daily-change");
+  const dailyChangePercent = document.querySelector(".daily-changePercent");
+  const portfolioChange = document.querySelector(".portfolio-change");
+  const portfolioChangePercent = document.querySelector(
+    ".portfolio-changePercent"
+  );
+  const portfolioValue = document.querySelector(".portfolio-value");
+};
+
 const reArrangePortfolioBySort = function () {
   const portfolioBodyEl = document.querySelector("#portfolio-table tbody");
-  console.log(portfolioBodyEl);
   while (portfolioBodyEl.firstChild) {
     portfolioBodyEl.removeChild(portfolioBodyEl.firstChild);
   }
-  currentPortfolioStocks.stocks.forEach((stock) => {
+  currentPortfolio.stocks.forEach((stock) => {
     const html = portfolioRowHtml(stock);
     portfolioBodyEl.insertAdjacentHTML("beforeend", html);
   });
@@ -112,7 +162,7 @@ const stockCardHtml = async function (stock) {
     <span class="stock-company-name">${utility.formatStockCardCompanyName(
       stock.companyName
     )}</span>
-    <button class="close-stock-card">X</button>
+    <button class="close-stock-card"><i class="fas fa-times"></i></button>
     </div>
     <span class="stock-logo" data-logo><img class="stock-logo-img" src="${
       logoSrc.url
@@ -180,10 +230,103 @@ const getCompanyLogoFromAPI = async function (stock) {
   return logoSrc;
 };
 
+const portfolioRowFixeValueHtml = function (stock) {
+  return `
+  <tr class="stock-info-row ticker-${stock.ticker}">
+        <td class="indivial-row-btns edit-btn ${
+          document
+            .querySelector(".th-place-holder")
+            .classList.contains("hide-it")
+            ? "hide-it"
+            : ""
+        }"><i class="far fa-edit"></i></td>
+        <td class="ticker">${stock.ticker}</td>
+        <td class="shares">${utility.formatNumber(stock.shares)}</td>
+        <td class="entry-price">$${utility.formatNumber(
+          stock.entry.toFixed(2)
+        )}</td> 
+        <td class="latest-price">Loading...</td> 
+        <td class="total-paid">$${utility.formatNumber(
+          (stock.entry * stock.shares).toFixed(2)
+        )}</td> 
+        <td class="latest-value">Loading...</td> 
+        <td class="daily-percentage">Loading...</td> 
+        <td class="daily-change">Loading...</td> 
+        <td class="overall-gain">Loading...</td>
+        <td class="overall-gain-percent">Loading...</td>
+        <td class="indivial-row-btns delete-btn ${
+          document
+            .querySelector(".th-place-holder")
+            .classList.contains("hide-it")
+            ? "hide-it"
+            : ""
+        }"><i class="far fa-trash-alt"></i></td>
+      </tr>
+  `;
+};
+
+const portfolioRowDynamicValueHtml = async function (stock) {
+  const APIData = await fetchStockFromAPI.fetchStockInfo(stock);
+  if (!APIData) return;
+
+  stock.change = APIData.change * stock.shares;
+  stock.changePercent = APIData.changePercent;
+  stock.latestPrice = APIData.latestPrice;
+  stock.totalPaid = stock.shares * stock.entry;
+  stock.marketValue = stock.shares * stock.latestPrice;
+  stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
+  stock.overallGainPercent =
+    ((stock.latestPrice - stock.entry) / stock.entry) * 100;
+
+  const currentRowEl = document.querySelector(`.ticker-${stock.ticker}`);
+
+  currentRowEl.querySelector(
+    `.latest-price`
+  ).textContent = `$${utility.formatNumber(stock.latestPrice.toFixed(2))}`;
+
+  currentRowEl.querySelector(
+    `.latest-value`
+  ).textContent = `$${utility.formatNumber(
+    (stock.shares * stock.latestPrice).toFixed(2)
+  )}`;
+
+  const dailyChangePercentEL = currentRowEl.querySelector(`.daily-percentage`);
+  dailyChangePercentEL.classList.add(
+    `${utility.formatPortfolioColor(stock.changePercent)}`
+  );
+  dailyChangePercentEL.textContent = `${utility.formatNumber(
+    (stock.changePercent * 100).toFixed(2)
+  )}%`;
+
+  const dailyChangeEL = currentRowEl.querySelector(`.daily-change`);
+  dailyChangeEL.classList.add(
+    `${utility.formatPortfolioColor(stock.changePercent)}`
+  );
+  dailyChangeEL.textContent = `$${utility.formatNumber(
+    stock.change.toFixed(2)
+  )}`;
+
+  currentRowEl.querySelector(
+    `.overall-gain`
+  ).textContent = `$${utility.formatNumber(stock.overallGain.toFixed(2))}`;
+
+  const overallGainPercentEl = currentRowEl.querySelector(
+    `.overall-gain-percent`
+  );
+  overallGainPercentEl.classList.add(
+    `${utility.formatPortfolioColor(stock.overallGainPercent)}`
+  );
+  overallGainPercentEl.textContent = `${utility.formatNumber(
+    stock.overallGainPercent.toFixed(2)
+  )}%`;
+};
+
 export default {
   reArrangePortfolioBySort,
   portfolio,
   portfolioRowHtml,
   stockCard,
   getCompanyLogoFromAPI,
+  indexCharts,
+  portfolioNew,
 };

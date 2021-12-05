@@ -6,12 +6,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Stock Portfolio Manager</title>
+
   <script src="app.js" type="module" defer></script>
   <script src="js/dialog.js" type="module" defer></script>
   <script src="js/control.js" type="module" defer></script>
   <script src="js/render.js" type="module" defer></script>
-  <script src="js/PortfolioLocalStorage.js" type="module" defer></script>
-  <script src="js/currentPortfolioStocks.js" type="module" defer></script>
+  <script src="js/BrowserLocalStorage.js" type="module" defer></script>
+  <script src="js/currentPortfolio.js" type="module" defer></script>
+  <script src="js/currentStockCards.js" type="module" defer></script>
+  <script src="js/googleChart.js" type="module" defer></script>
+
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +41,23 @@
       <button id="submit-stock">+</button>
 
     </div>
-    <div class="input-field-buttons"><button id="edit-all-stock"><i class="fas fa-tools"></i></button>
+
+    <div class="index-chart">
+      <div class="chart--SPY">
+        <span>Standard & Poor (SPY)</span>
+        <div id="Google-chart--SPY"></div>
+      </div>
+      <div class="chart--QQQ">
+        <span>NASDAQ 100 (QQQ)</span>
+        <div id="Google-chart--QQQ"></div>
+      </div>
+      <div class="chart--IWM">
+        <span>Russell 2000 (IWM)</span>
+        <div id="Google-chart--IWM"></div>
+      </div>
+    </div>
+
+    <div class="control-section-buttons"><button id="edit-all-stock"><i class="fas fa-tools"></i></button>
       <button id="delete-all-stock"><i class="fas fa-trash-alt"></i></button>
     </div>
 
@@ -61,13 +83,35 @@
         </tr>
       </thead>
     </table>
-
+    <div class="portfolio-overview">
+      <div class="portfolio-overview-metrics">
+        <span>Daily +/-:</span>
+        <span class="daily-change"></span>
+      </div>
+      <div class="portfolio-overview-metrics">
+        <span>Daily %:</span>
+        <span class="daily-changePercent"></span>
+      </div>
+      <div class="portfolio-overview-metrics">
+        <span>Portfolio +/-:</span>
+        <span class="portfolio-change"></span>
+      </div>
+      <div class="portfolio-overview-metrics">
+        <span>Portfolio %:</span>
+        <span class="portfolio-changePercent"></span>
+      </div>
+      <div class="portfolio-overview-metrics">
+        <span>Portfolio Value:</span>
+        <span class="portfolio-value"></span>
+      </div>
+    </div>
   </section>
 
   <section id="stock-card-section">
     <div class="stock-card-header">Stock Card</div>
 
-    <div class="stock-card-adding">+</div>
+    <div class="stock-card-adding">+</i>
+    </div>
 
 
   </section>

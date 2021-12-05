@@ -18,8 +18,7 @@ const calculateMarketCapUnit = function (marketCap) {
 };
 
 const formatStockCardCompanyName = function (name) {
-  if (name.includes(" - Class"))
-    return name.substring(0, name.indexOf("- Class"));
+  if (name.includes(" -")) return name.substring(0, name.indexOf("-"));
   return name;
 };
 

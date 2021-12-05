@@ -1,24 +1,39 @@
 import dialog from "./js/dialog.js";
-import PortfolioLocalStorage from "./js/PortfolioLocalStorage.js";
-import currentPortfolioStocks from "./js/currentPortfolioStocks.js";
+import BrowserLocalStorage from "./js/BrowserLocalStorage.js";
+import currentPortfolio from "./js/currentPortfolio.js";
+import currentStockCards from "./js/currentStockCards.js";
 import control from "./js/control.js";
 import render from "./js/render.js";
 
 const init = function () {
-  PortfolioLocalStorage.getAllStocks().forEach((stock) => {
-    currentPortfolioStocks.stocks.push(stock);
+  BrowserLocalStorage.getAllStocks().forEach((stock) => {
+    currentPortfolio.stocks.push(stock);
   });
 
-  ["FB", "AMZN", "AAPL", "NVDA", "GOOG"].forEach(async (stock) => {
-    render.stockCard(stock);
+  BrowserLocalStorage.getAllStockCards().forEach((stock) => {
+    currentStockCards.stocks.push(stock);
   });
 };
 
 init();
 
-if (currentPortfolioStocks.stocks.length === 0) {
-  control.initializeWithSampleData();
+// Sample data for demo
+if (currentPortfolio.stocks.length === 0) {
+  control.initializeSamplePortfolio();
+  control.initializeSampleStockCards();
 }
 
-render.portfolio();
+render.portfolioNew();
+
 control.buttonsON();
+currentStockCards.stocks.forEach(async (stock) => {
+  render.stockCard(stock);
+});
+
+// setTimeout(() => {
+//   currentPortfolio.calculatingPortfolio();
+// }, 1000);
+
+// console.log(currentPortfolio.calculatingPortfolio());
+
+render.indexCharts();

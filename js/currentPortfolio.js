@@ -1,4 +1,5 @@
 const stocks = [];
+const overview = [];
 
 const currentStockNameList = function () {
   return stocks.map((stock) => stock.ticker);
@@ -33,20 +34,33 @@ const storingAPIData = function (APIData) {
   }
 };
 
-// const calculateStockReturn = function () {
-//   stocks.forEach((stock) => {
-//     stock.totalPaid = stock.shares * stock.entry;
-//     stock.marketValue = stock.shares * stock.latestPrice;
-//     stock.overallGain = stock.shares * stock.latestPrice - stock.totalPaid;
-//     stock.overallGainPercent =
-//       ((stock.latestPrice - stock.entry) / stock.entry) * 100;
-//   });
-// };
+const calculatingPortfolio = async function () {
+  let dailyChange = 0;
+
+  stocks.forEach((stock) => {
+    dailyChange += parseFloat(stock.change);
+    console.log("stock ticker is " + stock.ticker);
+    console.log("stock change is " + stock.change);
+    console.log("dailyChange is " + dailyChange);
+  });
+  console.log(dailyChange);
+};
+
+const initializeOverview = function () {
+  overview.dailyChange = 0;
+  overview.dailyChangePercent = 0;
+  overview.portfolioChange = 0;
+  overview.portfolioChangePercent = 0;
+  overview.portfolioValue = 0;
+};
 
 export default {
   stocks,
+  overview,
   currentStockNameList,
   add,
   del,
   storingAPIData,
+  calculatingPortfolio,
+  initializeOverview,
 };

@@ -1,6 +1,7 @@
 body {
   font-family: "Nunito", sans-serif;
-  background-color: #f7f7f7;
+  /* background-color: #f7f7f7; */
+  background: linear-gradient(to right, #d6d6d6, #f7f7f7);
 }
 
 header {
@@ -33,7 +34,7 @@ header {
   justify-content: space-between;
   width: 80%;
   margin: 0 auto;
-  grid-template-columns: 250px 160px;
+  grid-template-columns: 250px auto 160px;
 }
 
 #control-section {
@@ -50,6 +51,8 @@ header {
   grid-template-rows: repeat(3, 25px);
   align-content: space-around;
   justify-self: start;
+  max-height: 110px;
+  align-self: end;
 }
 
 .stock-input-block {
@@ -76,6 +79,20 @@ header {
 #submit-stock:hover {
   background-color: #46819b;
   color: #fff;
+}
+
+.index-chart {
+  display: flex;
+  flex-grow: 1;
+  height: 150px;
+  gap: 50px;
+}
+
+.chart--SPY,
+.chart--QQQ,
+.chart--IWM {
+  text-align: center;
+  font-weight: bold;
 }
 
 #delete-all-stock {
@@ -117,7 +134,7 @@ header {
   border: 1px solid #639bb3;
 }
 
-.input-field-buttons {
+.control-section-buttons {
   display: grid;
   align-self: end;
   justify-self: end;
@@ -133,7 +150,6 @@ header {
   width: 80%;
   margin: 0 auto;
   margin-bottom: 80px;
-  display: flex;
 
   justify-content: space-between;
 }
@@ -214,6 +230,23 @@ table {
   border: 0;
   margin: 0;
   padding: 0;
+}
+
+.portfolio-overview {
+  background-color: #fff;
+  margin: 30px 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.portfolio-overview-metrics {
+  display: inline-block;
+  width: 200px;
+  height: 35px;
+  font-weight: bold;
 }
 
 /* --- END OF PORTFOLIO section--- */

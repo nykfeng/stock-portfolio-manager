@@ -1,4 +1,4 @@
-export default class PortfolioLocalStorage {
+export default class BrowserLocalStorage {
   static getAllStocks() {
     const stockList = JSON.parse(
       localStorage.getItem("portfolio-stocks") || "[]"
@@ -7,7 +7,7 @@ export default class PortfolioLocalStorage {
   }
 
   static addStock(stockToAdd) {
-    const stockList = PortfolioLocalStorage.getAllStocks();
+    const stockList = BrowserLocalStorage.getAllStocks();
     const existing = stockList.find(
       (stock) => stock.ticker === stockToAdd.ticker
     );
@@ -27,7 +27,7 @@ export default class PortfolioLocalStorage {
   }
 
   static editStock(ticker, shares, entry) {
-    const stockList = PortfolioLocalStorage.getAllStocks();
+    const stockList = BrowserLocalStorage.getAllStocks();
     const existing = stockList.find((stock) => stock.ticker === ticker);
 
     if (existing) {
@@ -38,11 +38,39 @@ export default class PortfolioLocalStorage {
   }
 
   static deleteStock(stockToDel) {
-    const stockList = PortfolioLocalStorage.getAllStocks();
+    const stockList = BrowserLocalStorage.getAllStocks();
     const newStockList = stockList.filter(
       (stock) => stock.ticker != stockToDel
     );
 
     localStorage.setItem("portfolio-stocks", JSON.stringify(newStockList));
+  }
+
+  static getAllStockCards() {
+    const stockCardList = JSON.parse(
+      localStorage.getItem("stock-cards") || "[]"
+    );
+    return stockCardList;
+  }
+
+  static addStockCard(stockToAdd) {
+    const stockCardList = BrowserLocalStorage.getAllStockCards();
+    const existing = stockCardList.find((stock) => stock.ticker === stockToAdd);
+
+    if (existing) {
+      console.log(`${stockToAdd} already exist`);
+    } else {
+      stockCardList.push(stockToAdd);
+    }
+    localStorage.setItem("stock-cards", JSON.stringify(stockCardList));
+  }
+
+  static deleteStockCard(stockToDel) {
+    const stockCardList = BrowserLocalStorage.getAllStockCards();
+    const newStockList = stockCardList.filter(
+      (stock) => stock.ticker != stockToDel
+    );
+
+    localStorage.setItem("stock-cards", JSON.stringify(newStockList));
   }
 }

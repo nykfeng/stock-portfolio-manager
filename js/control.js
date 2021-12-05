@@ -1,9 +1,10 @@
-import PortfolioLocalStorage from "./PortfolioLocalStorage.js";
-import currentPortfolioStocks from "./currentPortfolioStocks.js";
+import BrowserLocalStorage from "./BrowserLocalStorage.js";
+import currentPortfolio from "./currentPortfolio.js";
 import fetchStockFromAPI from "./fetchStockFromAPI.js";
 import render from "./render.js";
 import utility from "./utility.js";
 import dialog from "./dialog.js";
+import currentStockCards from "./currentStockCards.js";
 
 // Input fields
 const stockTickerInputEl = document.getElementById("stock-ticker");
@@ -49,13 +50,13 @@ const addStockFromInput = async function () {
   }
 
   if (await fetchStockFromAPI.fetchStockInfo({ ticker: stockTicker })) {
-    PortfolioLocalStorage.addStock({
+    BrowserLocalStorage.addStock({
       ticker: stockTicker,
       shares: +stockQuantity,
       entry: +stockEntry,
       acquiredDate: new Date().toISOString(),
     });
-    currentPortfolioStocks.add({
+    currentPortfolio.add({
       ticker: stockTicker,
       shares: +stockQuantity,
       entry: +stockEntry,
@@ -69,15 +70,8 @@ const addStockFromInput = async function () {
 
 // Remove the whole portfolio
 const deletePortfolio = function () {
-  localStorage.clear();
-  currentPortfolioStocks.stocks.splice(0, currentPortfolioStocks.stocks.length);
-  // const stockInfoRow = document.querySelectorAll(".stock-info-row");
-
-  // for (const el of stockInfoRow) {
-  //   el.remove();
-  // }
-
-  // ------------  OR  -------------------
+  localStorage.removeItem("portfolio-stocks");
+  currentPortfolio.stocks.splice(0, currentPortfolio.stocks.length);
   removePortfolioHtml();
 };
 
@@ -87,19 +81,27 @@ const removePortfolioHtml = function () {
 };
 
 const deleteIndividualStockFromPortfolio = function (ticker) {
-  console.log(ticker + " was deleted!");
-
-  currentPortfolioStocks.del(ticker);
-  PortfolioLocalStorage.deleteStock(ticker);
+  currentPortfolio.del(ticker);
+  BrowserLocalStorage.deleteStock(ticker);
 };
 
-const initializeWithSampleData = function () {
-  fetch("./sample.json")
+const initializeSamplePortfolio = function () {
+  fetch("./samplePortfolio.json")
     .then((res) => {
       return res.json();
     })
     .then((data) => {
       localStorage.setItem("portfolio-stocks", JSON.stringify(data));
+    });
+};
+
+const initializeSampleStockCards = function () {
+  fetch("./sampleStockCard.json")
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      localStorage.setItem("stock-cards", JSON.stringify(data));
     });
 };
 
@@ -116,7 +118,6 @@ const buttonsON = function () {
 
       this.classList.toggle("th-sort-asc", !asc);
       this.classList.toggle("th-sort-desc", asc);
-      console.log(currentPortfolioStocks.stocks);
 
       render.reArrangePortfolioBySort();
     });
@@ -130,7 +131,7 @@ const buttonsON = function () {
 
   const sortingPortfolioColumns = function (column, asc = true) {
     const dirModifier = asc ? 1 : -1;
-    currentPortfolioStocks.stocks.sort((a, b) => {
+    currentPortfolio.stocks.sort((a, b) => {
       return a[column] < b[column] ? dirModifier * 1 : dirModifier * -1;
     });
   };
@@ -141,7 +142,7 @@ const buttonsON = function () {
   // Clear the portfolio
   deletePortfolioBtn.addEventListener("click", function () {
     // If there are no stocks to remove, simply return
-    if (currentPortfolioStocks.stocks.length === 0) return;
+    if (currentPortfolio.stocks.length === 0) return;
     dialog.confirmDeletion();
 
     document
@@ -177,13 +178,10 @@ const buttonsON = function () {
       e.target.classList.contains("far") &&
       e.target.parentElement.classList.contains("delete-btn")
     ) {
-      const ticker =
-        e.target.parentElement.parentElement.querySelector(
-          ".ticker"
-        ).textContent;
+      const currentRow = e.target.closest(".stock-info-row");
+      const ticker = currentRow.querySelector(".ticker").textContent;
       deleteIndividualStockFromPortfolio(ticker);
-      removePortfolioHtml();
-      render.portfolio();
+      currentRow.remove();
     }
 
     if (
@@ -205,9 +203,8 @@ const buttonsON = function () {
   // Stock card delete button
   const stockCardSectionEl = document.querySelector("#stock-card-section");
   stockCardSectionEl.addEventListener("click", function (e) {
-    if (e.target.classList.contains("close-stock-card")) {
-      const deleteStockCard =
-        e.target.parentElement.parentElement.parentElement;
+    if (e.target.closest(".close-stock-card")) {
+      const deleteStockCard = e.target.closest(".stock-card");
       deleteStockCard.remove();
     }
   });
@@ -226,10 +223,12 @@ const buttonsON = function () {
     });
 
     dialogConfirmBtn.addEventListener("click", async function () {
-      const tickerInput = tickerInputEl.value;
+      const tickerInput = tickerInputEl.value.toUpperCase();
       document.querySelector(".confirm_dialog-background").remove();
       if (await fetchStockFromAPI.fetchStockInfo({ ticker: tickerInput })) {
         render.stockCard(tickerInput);
+        currentStockCards.stocks.push(tickerInput);
+        BrowserLocalStorage.addStockCard(tickerInput);
       }
     });
 
@@ -270,6 +269,13 @@ const editTableCell = function (tableCells) {
     input.style.color = "inherit";
     input.style.backgroundColor = "#D1D9D9";
 
+    // document.querySelector("body").addEventListener("click", function (e) {
+    //   console.log(e.target);
+    //   if (!e.target.classList.contains("tableCellInput")) {
+    //     input.blur();
+    //   }
+    // });
+
     const replaceOrKeepText = async function () {
       const tdEl = input.parentElement;
       const originalText = tdEl.getAttribute("data-text");
@@ -296,13 +302,13 @@ const editTableCell = function (tableCells) {
             deleteIndividualStockFromPortfolio(originalText);
 
             // Add the new ticker name along with old shares and entry info
-            PortfolioLocalStorage.addStock({
+            BrowserLocalStorage.addStock({
               ticker: currentText,
               shares: +shares,
               entry: +entry,
               acquiredDate: new Date().toISOString(),
             });
-            currentPortfolioStocks.add({
+            currentPortfolio.add({
               ticker: currentText,
               shares: +shares,
               entry: +entry,
@@ -324,13 +330,12 @@ const editTableCell = function (tableCells) {
             const entry = utility.cleanNumberFormat(
               trEl.querySelector(".entry-price").getAttribute("data-text")
             );
-            const index = currentPortfolioStocks.stocks.findIndex(
+            const index = currentPortfolio.stocks.findIndex(
               (stock) => stock.ticker === ticker
             );
-            currentPortfolioStocks.stocks[index].shares =
-              parseFloat(currentText);
-            console.log("entry is " + entry);
-            PortfolioLocalStorage.editStock(
+            currentPortfolio.stocks[index].shares = parseFloat(currentText);
+
+            BrowserLocalStorage.editStock(
               ticker,
               parseFloat(currentText),
               parseFloat(entry)
@@ -353,11 +358,11 @@ const editTableCell = function (tableCells) {
             const shares = trEl
               .querySelector(".shares")
               .getAttribute("data-text");
-            const index = currentPortfolioStocks.stocks.findIndex(
+            const index = currentPortfolio.stocks.findIndex(
               (stock) => stock.ticker === ticker
             );
-            currentPortfolioStocks.stocks[index].entry = parseFloat(newEntry);
-            PortfolioLocalStorage.editStock(
+            currentPortfolio.stocks[index].entry = parseFloat(newEntry);
+            BrowserLocalStorage.editStock(
               ticker,
               parseFloat(shares),
               parseFloat(newEntry)
@@ -371,8 +376,9 @@ const editTableCell = function (tableCells) {
         tdEl.removeAttribute("data-text");
         tdEl.innerHTML = originalText;
         tdEl.style.cssText = "padding: 1px;";
+
         removePortfolioHtml();
-        render.portfolio();
+        render.portfolioNew();
       }
     };
 
@@ -394,6 +400,7 @@ export default {
   addStockFromInput,
   deletePortfolio,
   deleteIndividualStockFromPortfolio,
-  initializeWithSampleData,
+  initializeSamplePortfolio,
+  initializeSampleStockCards,
   buttonsON,
 };
