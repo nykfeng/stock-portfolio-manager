@@ -103,13 +103,13 @@ const portfolioOverview = function () {
     // Need to calculate the overall daily change percentage
     currentPortfolio.overview.dailyChangePercent =
       currentPortfolio.overview.dailyChange /
-      (currentPortfolio.overview.portfolioValue -
-        currentPortfolio.overview.dailyChange);
+        (currentPortfolio.overview.portfolioValue -
+          currentPortfolio.overview.dailyChange) || 0;
 
     // Need to calculate the overall portfolio change percentage
     currentPortfolio.overview.portfolioChangePercent =
       currentPortfolio.overview.portfolioChange /
-      currentPortfolio.overview.portfolioPaid;
+        currentPortfolio.overview.portfolioPaid || 0;
 
     //----- Updating HTML content with the numbers -------//
     dailyChange.textContent = utility.formatNumber(
