@@ -7,19 +7,27 @@ const portfolioTableEl = document.getElementById("portfolio-table");
 const stockCardSection = document.getElementById("stock-card-section");
 const stockCardAdditionEl = document.querySelector(".stock-card-adding");
 
-const portfolio = function () {
+const portfolio = async function () {
   const portfolioBodyEl = document.createElement("tbody");
   portfolioTableEl.insertAdjacentElement("beforeend", portfolioBodyEl);
 
   // For calculating portfolio performance
   currentPortfolio.initializeOverview();
 
-  currentPortfolio.stocks.forEach(async (stock) => {
-    const html = portfolioRowFixeValueHtml(stock);
-    portfolioBodyEl.insertAdjacentHTML("beforeend", html);
-    await portfolioRowDynamicValueHtml(stock);
-  });
-  portfolioOverview();
+  // currentPortfolio.stocks.forEach(async (stock) => {
+  //   const html = portfolioRowFixedValueHtml(stock);
+  //   portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+  //   await portfolioRowDynamicValueHtml(stock);
+  // });
+  // portfolioOverview();
+
+  await Promise.all(
+    currentPortfolio.stocks.map(async (stock) => {
+      const html = portfolioRowFixedValueHtml(stock);
+      portfolioBodyEl.insertAdjacentHTML("beforeend", html);
+      await portfolioRowDynamicValueHtml(stock);
+    })
+  ).then(() => portfolioOverview());
 };
 
 const portfolioRowHtml = function (stock) {
@@ -99,67 +107,61 @@ const portfolioOverview = function () {
   );
   const portfolioValue = document.querySelector(".portfolio-value");
 
-  setTimeout(function () {
-    // Need to calculate the overall daily change percentage
-    currentPortfolio.overview.dailyChangePercent =
-      currentPortfolio.overview.dailyChange /
-        (currentPortfolio.overview.portfolioValue -
-          currentPortfolio.overview.dailyChange) || 0;
+  // Need to calculate the overall daily change percentage
+  currentPortfolio.overview.dailyChangePercent =
+    currentPortfolio.overview.dailyChange /
+      (currentPortfolio.overview.portfolioValue -
+        currentPortfolio.overview.dailyChange) || 0;
 
-    // Need to calculate the overall portfolio change percentage
-    currentPortfolio.overview.portfolioChangePercent =
-      currentPortfolio.overview.portfolioChange /
-        currentPortfolio.overview.portfolioPaid || 0;
+  // Need to calculate the overall portfolio change percentage
+  currentPortfolio.overview.portfolioChangePercent =
+    currentPortfolio.overview.portfolioChange /
+      currentPortfolio.overview.portfolioPaid || 0;
 
-    //----- Updating HTML content with the numbers -------//
-    dailyChange.textContent = utility.formatNumber(
-      currentPortfolio.overview.dailyChange.toFixed(2)
-    );
-    dailyChangePercent.textContent = `${(
-      currentPortfolio.overview.dailyChangePercent * 100
-    ).toFixed(2)}%`;
-    portfolioChange.textContent = utility.formatNumber(
-      currentPortfolio.overview.portfolioChange.toFixed(2)
-    );
-    portfolioChangePercent.textContent = `${(
-      currentPortfolio.overview.portfolioChangePercent * 100
-    ).toFixed(2)}%`;
-    portfolioValue.textContent = utility.formatNumber(
-      currentPortfolio.overview.portfolioValue.toFixed(2)
-    );
+  //----- Updating HTML content with the numbers -------//
+  dailyChange.textContent = utility.formatNumber(
+    currentPortfolio.overview.dailyChange.toFixed(2)
+  );
+  dailyChangePercent.textContent = `${(
+    currentPortfolio.overview.dailyChangePercent * 100
+  ).toFixed(2)}%`;
+  portfolioChange.textContent = utility.formatNumber(
+    currentPortfolio.overview.portfolioChange.toFixed(2)
+  );
+  portfolioChangePercent.textContent = `${(
+    currentPortfolio.overview.portfolioChangePercent * 100
+  ).toFixed(2)}%`;
+  portfolioValue.textContent = utility.formatNumber(
+    currentPortfolio.overview.portfolioValue.toFixed(2)
+  );
 
-    // Remove previous color box class
-    utility.removeColorBox(dailyChange);
-    utility.removeColorBox(dailyChangePercent);
-    utility.removeColorBox(portfolioChange);
-    utility.removeColorBox(portfolioChangePercent);
-    utility.removeColorBox(portfolioValue);
+  // Remove previous color box class
+  utility.removeColorBox(dailyChange);
+  utility.removeColorBox(dailyChangePercent);
+  utility.removeColorBox(portfolioChange);
+  utility.removeColorBox(portfolioChangePercent);
+  utility.removeColorBox(portfolioValue);
 
-    //----- Adding red or green box to these numbers -------//
-    dailyChange.classList.add(
-      `${utility.formatPortfolioColor(currentPortfolio.overview.dailyChange)}`
-    );
-    dailyChangePercent.classList.add(
-      `${utility.formatPortfolioColor(
-        currentPortfolio.overview.dailyChangePercent
-      )}`
-    );
-    portfolioChange.classList.add(
-      `${utility.formatPortfolioColor(
-        currentPortfolio.overview.portfolioChange
-      )}`
-    );
-    portfolioChangePercent.classList.add(
-      `${utility.formatPortfolioColor(
-        currentPortfolio.overview.portfolioChangePercent
-      )}`
-    );
-    portfolioValue.classList.add(
-      `${utility.formatPortfolioColor(
-        currentPortfolio.overview.portfolioValue
-      )}`
-    );
-  }, 1000);
+  //----- Adding red or green box to these numbers -------//
+  dailyChange.classList.add(
+    `${utility.formatPortfolioColor(currentPortfolio.overview.dailyChange)}`
+  );
+  dailyChangePercent.classList.add(
+    `${utility.formatPortfolioColor(
+      currentPortfolio.overview.dailyChangePercent
+    )}`
+  );
+  portfolioChange.classList.add(
+    `${utility.formatPortfolioColor(currentPortfolio.overview.portfolioChange)}`
+  );
+  portfolioChangePercent.classList.add(
+    `${utility.formatPortfolioColor(
+      currentPortfolio.overview.portfolioChangePercent
+    )}`
+  );
+  portfolioValue.classList.add(
+    `${utility.formatPortfolioColor(currentPortfolio.overview.portfolioValue)}`
+  );
 };
 
 const reCalcPortfolioOverview = function () {
@@ -271,7 +273,7 @@ const getCompanyLogoFromAPI = async function (stock) {
   return logoSrc;
 };
 
-const portfolioRowFixeValueHtml = function (stock) {
+const portfolioRowFixedValueHtml = function (stock) {
   return `
   <tr class="stock-info-row ticker-${stock.ticker}">
         <td class="indivial-row-btns edit-btn ${
