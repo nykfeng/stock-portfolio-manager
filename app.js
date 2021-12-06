@@ -31,16 +31,3 @@ control.buttonsON();
 currentStockCards.stocks.forEach(async (stock) => {
   render.stockCard(stock);
 });
-
-setTimeout(() => {
-  console.log("---------------------------------");
-  console.log(currentPortfolio.overview);
-
-  currentPortfolio.overview.forEach((overview) => {
-    console.log(overview);
-  }, 5000);
-});
-
-// render.portfolioOverview();
-
-// setTimeout(render.portfolioOverview, 1000);

@@ -83,9 +83,7 @@ export default class BrowserLocalStorage {
 
   static deleteStockCard(stockToDel) {
     const stockCardList = BrowserLocalStorage.getAllStockCards();
-    const newStockList = stockCardList.filter(
-      (stock) => stock.ticker != stockToDel
-    );
+    const newStockList = stockCardList.filter((stock) => stock != stockToDel);
 
     localStorage.setItem("stock-cards", JSON.stringify(newStockList));
   }

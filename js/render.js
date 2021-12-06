@@ -196,7 +196,7 @@ const stockCardHtml = async function (stock) {
   const logoSrc =
     (await getCompanyLogoFromAPI(stock)) || "./images/generic-company-pic.png";
   const html = `
-  <div class="stock-card" data-${stock.symbol}>
+  <div class="stock-card" data-ticker="${stock.symbol}"">
   
   <div class="stock-basics">
     <div class="stock-card-title">

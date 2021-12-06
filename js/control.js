@@ -216,6 +216,8 @@ const buttonsON = function () {
   stockCardSectionEl.addEventListener("click", function (e) {
     if (e.target.closest(".close-stock-card")) {
       const deleteStockCard = e.target.closest(".stock-card");
+      console.log(deleteStockCard.dataset.ticker);
+      BrowserLocalStorage.deleteStockCard(deleteStockCard.dataset.ticker);
       deleteStockCard.remove();
     }
   });
