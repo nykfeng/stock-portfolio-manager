@@ -18,12 +18,14 @@ const calculateMarketCapUnit = function (marketCap) {
 };
 
 const formatStockCardCompanyName = function (name) {
+  if (name.length > 24) name = name.substring(0, 23) + "...";
   if (name.includes(" -")) return name.substring(0, name.indexOf("-"));
   return name;
 };
 
 const formatStockExchangeName = function (name) {
   if (name.toUpperCase().includes("NEW YORK STOCK EXCHANGE")) return "NYSE";
+  else if (name.length > 10) return "";
   else return name;
 };
 

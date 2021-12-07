@@ -214,6 +214,10 @@ table {
   color: #46819b;
   cursor: pointer;
 }
+.delete-btn {
+  text-align: center;
+}
+
 .delete-btn .fa-trash-alt {
   color: #c93636;
   cursor: pointer;

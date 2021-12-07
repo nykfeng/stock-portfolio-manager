@@ -4,7 +4,6 @@ import fetchStockFromAPI from "./fetchStockFromAPI.js";
 import googleChart from "./googleChart.js";
 
 const portfolioTableEl = document.getElementById("portfolio-table");
-const stockCardSection = document.getElementById("stock-card-section");
 const stockCardAdditionEl = document.querySelector(".stock-card-adding");
 
 const portfolio = async function () {
@@ -27,7 +26,10 @@ const portfolio = async function () {
       portfolioBodyEl.insertAdjacentHTML("beforeend", html);
       await portfolioRowDynamicValueHtml(stock);
     })
-  ).then(() => portfolioOverview());
+  ).then(() => {
+    portfolioOverview();
+    portfolioWeight();
+  });
 };
 
 const portfolioRowHtml = function (stock) {
@@ -68,6 +70,7 @@ const portfolioRowHtml = function (stock) {
         <td class="overall-gain-percent ${utility.formatPortfolioColor(
           stock.overallGainPercent
         )}">${utility.formatNumber(stock.overallGainPercent.toFixed(2))}%</td>
+        <td class="portfolio-weight">${stock.weight}%</td>
         
         <td class="indivial-row-btns delete-btn ${
           document
@@ -171,6 +174,36 @@ const reCalcPortfolioOverview = function () {
     currentPortfolio.overview.portfolioValue += stock.marketValue;
     currentPortfolio.overview.portfolioChange += stock.overallGain;
     currentPortfolio.overview.portfolioPaid += stock.totalPaid;
+  });
+};
+
+const portfolioWeight = function () {
+  const allweightEls = document.querySelectorAll(".portfolio-weight");
+  allweightEls.forEach((weight) => {
+    const currentRow = weight.parentElement;
+    const currentValue = parseFloat(
+      utility.cleanNumberFormat(
+        currentRow.querySelector(".latest-value").textContent
+      )
+    );
+
+    if (currentPortfolio.overview.portfolioValue === 0) {
+      const currentWeight = 0;
+    } else {
+      const currentWeight = (
+        (currentValue / currentPortfolio.overview.portfolioValue) *
+        100
+      ).toFixed(2);
+    }
+    weight.textContent = currentWeight + "%";
+
+    // also update the currentPortolio.stocks with the weight number
+    const currentTicker = currentRow.querySelector(".ticker").textContent;
+
+    currentPortfolio.stocks.forEach((stock) => {
+      if (stock.ticker === currentTicker)
+        stock.weight = parseFloat(currentWeight).toFixed(2);
+    });
   });
 };
 
@@ -297,6 +330,7 @@ const portfolioRowFixedValueHtml = function (stock) {
         <td class="daily-change">Loading...</td> 
         <td class="overall-gain">Loading...</td>
         <td class="overall-gain-percent">Loading...</td>
+        <td class="portfolio-weight">Loading...</td>
         <td class="indivial-row-btns delete-btn ${
           document
             .querySelector(".th-place-holder")
@@ -378,4 +412,5 @@ export default {
   indexCharts,
   portfolioOverview,
   reCalcPortfolioOverview,
+  portfolioWeight,
 };

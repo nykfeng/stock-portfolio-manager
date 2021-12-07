@@ -193,6 +193,7 @@ const buttonsON = function () {
       currentRow.remove();
       render.reCalcPortfolioOverview();
       render.portfolioOverview();
+      render.portfolioWeight();
     }
 
     if (
