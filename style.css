@@ -76,11 +76,32 @@ header {
   background-color: #f7f7f7;
   color: #1a2f38;
   border: 1px solid #1a2f38;
+  position: relative;
 }
 
 #submit-stock:hover {
   background-color: #46819b;
   color: #fff;
+}
+
+#submit-stock::before {
+  content: "Add stock to your portfolio";
+  display: block;
+  position: absolute;
+  border: 1px solid #1a2f38;
+  color: #1a2f38;
+  border-radius: 10px;
+  font-size: 16px;
+  bottom: 125%;
+  right: -100%;
+  padding: 10px;
+  white-space: nowrap;
+  transform: scale(0);
+  transition: transform 200ms ease-in-out;
+}
+
+#submit-stock:hover::before {
+  transform: scale(1);
 }
 
 .index-chart {
@@ -97,6 +118,11 @@ header {
   font-weight: bold;
 }
 
+#delete-all-stock:active,
+#edit-all-stock:active {
+  transform: scale(0.9);
+}
+
 #delete-all-stock {
   height: 40px;
   width: 50px;
@@ -107,6 +133,7 @@ header {
   border-radius: 10px;
   align-content: center;
   border: 1px solid #c93636;
+  position: relative;
 }
 
 #delete-all-stock:hover {
@@ -114,9 +141,24 @@ header {
   border: 1px solid #ec6666;
 }
 
-#delete-all-stock:active,
-#edit-all-stock:active {
-  transform: scale(0.9);
+#delete-all-stock::before {
+  content: "Delete your portfolio";
+  display: block;
+  position: absolute;
+  border: 1px solid #c93636;
+  border-radius: 10px;
+  background-color: #fff;
+  font-size: 16px;
+  bottom: 120%;
+  right: -100%;
+  padding: 10px;
+  white-space: nowrap;
+  transform: scale(0);
+  transition: transform 200ms ease-in-out;
+}
+
+#delete-all-stock:hover::before {
+  transform: scale(1);
 }
 
 #edit-all-stock {
@@ -129,11 +171,32 @@ header {
   border-radius: 10px;
   align-content: center;
   border: 1px solid #46819b;
+  position: relative;
 }
 
 #edit-all-stock:hover {
   color: #639bb3;
   border: 1px solid #639bb3;
+}
+
+#edit-all-stock::before {
+  content: "Edit your portfolio";
+  display: block;
+  position: absolute;
+  border: 1px solid #639bb3;
+  border-radius: 10px;
+  background-color: #fff;
+  font-size: 16px;
+  bottom: 120%;
+  left: -100%;
+  padding: 10px;
+  white-space: nowrap;
+  transform: scale(0);
+  transition: transform 200ms ease-in-out;
+}
+
+#edit-all-stock:hover::before {
+  transform: scale(1);
 }
 
 .control-section-buttons {
@@ -214,6 +277,11 @@ table {
   color: #46819b;
   cursor: pointer;
 }
+
+.edit-btn .fa-edit:hover {
+  color: #1a2f38;
+}
+
 .delete-btn {
   text-align: center;
 }
@@ -221,10 +289,6 @@ table {
 .delete-btn .fa-trash-alt {
   color: #c93636;
   cursor: pointer;
-}
-
-.edit-btn .fa-edit:hover {
-  color: #1a2f38;
 }
 
 .delete-btn .fa-trash-alt:hover {
@@ -303,6 +367,7 @@ table {
   border-radius: 10px;
   row-gap: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transition: transform 250ms ease;
 }
 
 .stock-card:hover {
