@@ -147,7 +147,7 @@ const buttonsON = function () {
   // Add stocks to portfolio
   addStockBtn.addEventListener("click", addStockFromInput);
 
-  // Clear the portfolio
+  // Delete the portfolio
   deletePortfolioBtn.addEventListener("click", function () {
     // If there are no stocks to remove, simply return
     if (currentPortfolio.stocks.length === 0) return;
@@ -167,6 +167,17 @@ const buttonsON = function () {
         document.querySelector(".confirm_dialog-background").remove();
       });
   });
+
+  // Clear the popup text box
+  // deletePortfolioBtn.addEventListener("mouseover", function () {
+  //   const deletePopUpBoxEl = document.querySelector(
+  //     "#delete-all-stock::before"
+  //   );
+  //   console.log(deletePopUpBoxEl);
+  //   setTimeout(function () {
+  //     deletePopUpBoxEl.style.display = "none";
+  //   }, 1000);
+  // });
 
   // Edit portfolio button
   editPortfolioBtn.addEventListener("click", function () {

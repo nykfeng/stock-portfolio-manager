@@ -251,7 +251,8 @@ table {
   color: #ffffff;
 }
 
-.th-sort-pending {
+.th-sort-pending,
+.th-sort-header {
   cursor: pointer;
 }
 

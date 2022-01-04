@@ -187,10 +187,11 @@ const portfolioWeight = function () {
       )
     );
 
+    let currentWeight;
     if (currentPortfolio.overview.portfolioValue === 0) {
-      const currentWeight = 0;
+      currentWeight = 0;
     } else {
-      const currentWeight = (
+      currentWeight = (
         (currentValue / currentPortfolio.overview.portfolioValue) *
         100
       ).toFixed(2);
