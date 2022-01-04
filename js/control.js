@@ -122,6 +122,7 @@ const buttonsON = function () {
       this.classList.remove("th-sort-pending");
 
       sortingPortfolioColumns(tableHeader.dataset.column, asc);
+      console.table(currentPortfolio.stocks);
       BrowserLocalStorage.sortStock(tableHeader.dataset.column, asc);
 
       this.classList.toggle("th-sort-asc", !asc);

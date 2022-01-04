@@ -70,7 +70,7 @@ const portfolioRowHtml = function (stock) {
         <td class="overall-gain-percent ${utility.formatPortfolioColor(
           stock.overallGainPercent
         )}">${utility.formatNumber(stock.overallGainPercent.toFixed(2))}%</td>
-        <td class="portfolio-weight">${stock.weight}%</td>
+        <td class="portfolio-weight">${stock.weight.toFixed(2)}%</td>
         
         <td class="indivial-row-btns delete-btn ${
           document
@@ -203,7 +203,7 @@ const portfolioWeight = function () {
 
     currentPortfolio.stocks.forEach((stock) => {
       if (stock.ticker === currentTicker)
-        stock.weight = parseFloat(currentWeight).toFixed(2);
+        stock.weight = parseFloat(currentWeight);
     });
   });
 };
