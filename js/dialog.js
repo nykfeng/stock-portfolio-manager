@@ -15,6 +15,7 @@ const confirmDeletion = function () {
       </div>
     </div>
     `;
+
   document.querySelector("body").insertAdjacentHTML("beforeend", html);
 };
 
@@ -36,7 +37,10 @@ const confirmFetchError = function (stock) {
       </div>
     </div>
     `;
-  document.querySelector("body").insertAdjacentHTML("beforeend", html);
+  const errorModal = document.querySelector(".confirm_dialog-background");
+  if (!errorModal) {
+    document.querySelector("body").insertAdjacentHTML("beforeend", html);
+  }
 };
 
 const addStockCardModal = function () {
