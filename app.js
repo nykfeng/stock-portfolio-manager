@@ -6,13 +6,26 @@ import control from "./js/control.js";
 import render from "./js/render.js";
 
 const init = function () {
-  BrowserLocalStorage.getAllStocks().forEach((stock) => {
-    currentPortfolio.stocks.push(stock);
-  });
+  const portfolioStocks = BrowserLocalStorage.getAllStocks();
+  const stockCards = BrowserLocalStorage.getAllStockCards();
 
-  BrowserLocalStorage.getAllStockCards().forEach((stock) => {
-    currentStockCards.stocks.push(stock);
-  });
+  // If there are stocks saved, pull from localStorage
+  // else initiate with sample data
+  if (portfolioStocks.length > 0) {
+    portfolioStocks.forEach((stock) => {
+      currentPortfolio.stocks.push(stock);
+    });
+  } else {
+    control.initializeSamplePortfolio();
+  }
+
+  if (stockCards.length > 0) {
+    BrowserLocalStorage.getAllStockCards().forEach((stock) => {
+      currentStockCards.stocks.push(stock);
+    });
+  } else {
+    control.initializeSampleStockCards();
+  }
 };
 
 init();

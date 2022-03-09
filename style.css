@@ -2,6 +2,11 @@ body {
   font-family: "Nunito", sans-serif;
   /* background-color: #f7f7f7; */
   background: linear-gradient(to right, #d6d6d6, #f7f7f7);
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 8px;
+  box-sizing: border-box;
 }
 
 header {
@@ -489,4 +494,10 @@ footer {
   width: 80%;
   margin: 0 auto;
   text-align: center;
+}
+
+#footer-section {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 }
