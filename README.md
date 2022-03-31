@@ -1,5 +1,9 @@
 # stock-portfolio-manager
 
+## Links
+
+- [Deployed Application](https://stock-portfolio-manager.netlify.app/)
+
 ### This application allows you to create and track a portfolio of stocks with real time quotes and your return on investment. It also has a stock card section where you can use it as watch list.
 
 ### ATTENTION: This application currently uses a free-tier API, if data is not showing up on the app, it is likely the monthly limit has been reached.
